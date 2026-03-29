@@ -964,6 +964,54 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   }
 
+  /* ── Tongue Tuner Panel ── */
+  #tongue-tuner {
+    position: fixed; top: 50%; left: 10px;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.9);
+    border: 1px solid rgba(232,96,122,0.4);
+    border-radius: 8px;
+    padding: 12px 14px;
+    z-index: 35;
+    font-family: 'Courier New', monospace;
+    backdrop-filter: blur(8px);
+    display: none;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  #tongue-tuner.open { display: block; }
+  #tongue-tuner h4 {
+    font-size: 11px; letter-spacing: 2px;
+    color: #e8607a; text-transform: uppercase;
+    margin: 0 0 8px; text-align: center;
+  }
+  #tongue-tuner label {
+    display: block; font-size: 10px; letter-spacing: 1px;
+    color: #fff; text-transform: uppercase;
+    margin-top: 8px; margin-bottom: 3px;
+  }
+  #tongue-tuner label:first-of-type { margin-top: 0; }
+  #tongue-tuner input[type="range"] {
+    width: 180px; accent-color: #e8607a; height: 4px;
+  }
+  #tongue-tuner .tt-val {
+    font-size: 10px; color: #e8607a; font-weight: bold;
+    float: right;
+  }
+  #tongue-tuner-toggle {
+    position: fixed; top: 50%; left: 0;
+    transform: translateY(-50%);
+    background: rgba(232,96,122,0.2);
+    border: 1px solid rgba(232,96,122,0.4); border-left: none;
+    border-radius: 0 4px 4px 0;
+    color: rgba(232,96,122,0.7);
+    font-family: 'Courier New', monospace; font-size: 9px;
+    letter-spacing: 1px; padding: 6px 4px;
+    cursor: pointer; writing-mode: vertical-rl;
+    text-transform: uppercase; z-index: 35;
+  }
+  #tongue-tuner-toggle:hover { background: rgba(232,96,122,0.3); }
+
   @media (max-width: 768px) {
     #shortcut-legend { display: none; }
     #style-panel { width: 260px; }
@@ -1106,6 +1154,51 @@
 </div>
 
 
+<!-- ══════ TONGUE TUNER ══════ -->
+<button id="tongue-tuner-toggle" onclick="document.getElementById('tongue-tuner').classList.toggle('open')">👅 TUNE</button>
+<div id="tongue-tuner">
+  <h4>👅 Tongue Tuner</h4>
+
+  <label>Sway Amplitude <span class="tt-val" id="tt-sway-amp-val">0.25</span></label>
+  <input type="range" id="tt-sway-amp" min="0" max="300" value="25" oninput="tongueParams.swayAmp=this.value/100;document.getElementById('tt-sway-amp-val').textContent=(this.value/100).toFixed(2)">
+
+  <label>Sway Speed <span class="tt-val" id="tt-sway-spd-val">5.0</span></label>
+  <input type="range" id="tt-sway-spd" min="0" max="500" value="50" oninput="tongueParams.swaySpd=this.value/10;document.getElementById('tt-sway-spd-val').textContent=(this.value/10).toFixed(1)">
+
+  <label>Sway Phase <span class="tt-val" id="tt-sway-phase-val">0.90</span></label>
+  <input type="range" id="tt-sway-phase" min="0" max="300" value="90" oninput="tongueParams.swayPhase=this.value/100;document.getElementById('tt-sway-phase-val').textContent=(this.value/100).toFixed(2)">
+
+  <label>Flick Amplitude <span class="tt-val" id="tt-flick-amp-val">0.20</span></label>
+  <input type="range" id="tt-flick-amp" min="0" max="300" value="20" oninput="tongueParams.flickAmp=this.value/100;document.getElementById('tt-flick-amp-val').textContent=(this.value/100).toFixed(2)">
+
+  <label>Flick Speed <span class="tt-val" id="tt-flick-spd-val">14.0</span></label>
+  <input type="range" id="tt-flick-spd" min="0" max="500" value="140" oninput="tongueParams.flickSpd=this.value/10;document.getElementById('tt-flick-spd-val').textContent=(this.value/10).toFixed(1)">
+
+  <label>Flick Phase <span class="tt-val" id="tt-flick-phase-val">1.20</span></label>
+  <input type="range" id="tt-flick-phase" min="0" max="400" value="120" oninput="tongueParams.flickPhase=this.value/100;document.getElementById('tt-flick-phase-val').textContent=(this.value/100).toFixed(2)">
+
+  <label>Flick Start <span class="tt-val" id="tt-flick-start-val">0.70</span></label>
+  <input type="range" id="tt-flick-start" min="0" max="100" value="70" oninput="tongueParams.flickStart=this.value/100;document.getElementById('tt-flick-start-val').textContent=(this.value/100).toFixed(2)">
+
+  <label>Bob Amplitude <span class="tt-val" id="tt-bob-amp-val">0.18</span></label>
+  <input type="range" id="tt-bob-amp" min="0" max="300" value="18" oninput="tongueParams.bobAmp=this.value/100;document.getElementById('tt-bob-amp-val').textContent=(this.value/100).toFixed(2)">
+
+  <label>Bob Speed <span class="tt-val" id="tt-bob-spd-val">4.0</span></label>
+  <input type="range" id="tt-bob-spd" min="0" max="500" value="40" oninput="tongueParams.bobSpd=this.value/10;document.getElementById('tt-bob-spd-val').textContent=(this.value/10).toFixed(1)">
+
+  <label>Bob Phase <span class="tt-val" id="tt-bob-phase-val">0.70</span></label>
+  <input type="range" id="tt-bob-phase" min="0" max="300" value="70" oninput="tongueParams.bobPhase=this.value/100;document.getElementById('tt-bob-phase-val').textContent=(this.value/100).toFixed(2)">
+
+  <label>Extend Speed <span class="tt-val" id="tt-extend-val">2.0</span></label>
+  <input type="range" id="tt-extend" min="0" max="200" value="20" oninput="tongueParams.extendSpd=this.value/10;document.getElementById('tt-extend-val').textContent=(this.value/10).toFixed(1)">
+
+  <label>Curl Amount <span class="tt-val" id="tt-curl-val">0.25</span></label>
+  <input type="range" id="tt-curl" min="0" max="200" value="25" oninput="tongueParams.curlAmt=this.value/100;document.getElementById('tt-curl-val').textContent=(this.value/100).toFixed(2)">
+
+  <label>Overall Sway <span class="tt-val" id="tt-osway-val">0.08</span></label>
+  <input type="range" id="tt-osway" min="0" max="100" value="8" oninput="tongueParams.overallSway=this.value/100;document.getElementById('tt-osway-val').textContent=(this.value/100).toFixed(2)">
+</div>
+
 <!-- ══════ UNDO BAR ══════ -->
 <div id="undo-bar">
   <p>Scene cleared</p>
@@ -1144,46 +1237,49 @@ import * as THREE from 'three';
 // ═══════════════════════════════════════════════════
 // MODEL VARIANT DATA
 // ═══════════════════════════════════════════════════
+// Base OG colors — all variants use these for the body
+var OG_BODY = { body: 0x6b4228, bodyShadow: 0x3d2810, belly: 0xc8a07a, snout: 0x2a2a3a, earInner: 0xc86478 };
+
 const MODELS = [
   {
     id: 'og',
     name: 'OG Lick',
     tag: 'CLASSIC',
-    desc: 'The original goggle-eyed beaver. Long tongue, zero shame. The one that started it all.',
-    traits: ['ORANGE', 'PINK TONGUE', 'CLASSIC'],
-    colors: { body: 0xFF6B1A, tongue: 0xFF69B4, eyes: 0xFFFFFF, pupil: 0x222222, tail: 0xFFD600, accent: null }
+    desc: 'The original brown beaver. Big eyes, long tongue, zero shame.',
+    traits: ['CLASSIC', 'PINK TONGUE', 'OG'],
+    colors: Object.assign({}, OG_BODY, { tongue: 0xe8607a, tongueTip: 0xff9aaa, tail: 0x1a1a2a, tailFace: 0x252535, stripes: null })
   },
   {
     id: 'prison',
     name: 'Prison Lick',
     tag: 'PRISON',
-    desc: 'Fresh out of solitary. Striped jumpsuit, ball & chain. Still smuggling contraband.',
-    traits: ['STRIPES', 'BALL & CHAIN', 'CONTRABAND'],
-    colors: { body: 0xCC5500, tongue: 0xFF69B4, eyes: 0xFFFFFF, pupil: 0x222222, tail: 0x888888, accent: 0x222222 }
+    desc: 'Fresh out of solitary. Striped jumpsuit. Still smuggling contraband.',
+    traits: ['STRIPES', 'PRISON', 'CONTRABAND'],
+    colors: Object.assign({}, OG_BODY, { tongue: 0xe8607a, tongueTip: 0xff9aaa, tail: 0x1a1a2a, tailFace: 0x252535, stripes: 0xf0f0f0 })
   },
   {
     id: 'slime',
     name: 'Slime Lick',
     tag: 'SLIME',
-    desc: 'Oozing with green slime energy. Dripping, glowing, absolutely unhinged.',
-    traits: ['TOXIC GREEN', 'OOZE', 'SLIME MODE'],
-    colors: { body: 0x00FF88, tongue: 0x88FF44, eyes: 0xCCFFCC, pupil: 0x004400, tail: 0x44CC44, accent: null }
+    desc: 'Dripping with toxic ooze. The tongue glows green. Absolutely unhinged.',
+    traits: ['TOXIC TONGUE', 'OOZE TAIL', 'SLIME'],
+    colors: Object.assign({}, OG_BODY, { tongue: 0x66e633, tongueTip: 0x99ff66, tail: 0x1e591e, tailFace: 0x2e732e, stripes: null })
   },
   {
     id: 'gold',
     name: 'Gold Lick',
     tag: 'LEGENDARY',
-    desc: 'Gilded and glorious. The rarest Lickalotapus. Flex it or lose it.',
-    traits: ['24K GOLD', 'CROWN', 'LEGENDARY'],
-    colors: { body: 0xFFD700, tongue: 0xFFA500, eyes: 0xFFF8DC, pupil: 0x8B6914, tail: 0xDAA520, accent: 0xFFD700 }
+    desc: 'Gilded crown and golden tail. The rarest Lickalotapus. Flex it.',
+    traits: ['CROWN', 'GOLD TAIL', 'LEGENDARY'],
+    colors: Object.assign({}, OG_BODY, { tongue: 0xe8607a, tongueTip: 0xff9aaa, tail: 0xb8941a, tailFace: 0xd9b31a, stripes: null, crown: true })
   },
   {
     id: 'neon',
     name: 'Neon Lick',
     tag: 'NEON',
-    desc: 'Cyberpunk fever dream. Glows in the dark. Probably radioactive.',
-    traits: ['TEAL GLOW', 'HOT PINK', 'CYBERPUNK'],
-    colors: { body: 0x00E5CC, tongue: 0xFF1493, eyes: 0xFFFFFF, pupil: 0xFF00FF, tail: 0x00FFFF, accent: null }
+    desc: 'Cyberpunk fever dream. Hot pink tongue, neon tail. Probably radioactive.',
+    traits: ['HOT PINK TONGUE', 'NEON TAIL', 'CYBERPUNK'],
+    colors: Object.assign({}, OG_BODY, { tongue: 0xff00ff, tongueTip: 0xff80ff, tail: 0x004d80, tailFace: 0x00b3e6, stripes: null })
   }
 ];
 
@@ -1202,103 +1298,287 @@ let modelScale0 = 1;
 let modelRotY0 = 0;
 let previewScenes = [];
 
-const GLTF_CDN = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js';
+var _GLTFLoader = null;
 
 // ═══════════════════════════════════════════════════
 // BUILD LICKALOTAPUS PLACEHOLDER (per variant)
 // ═══════════════════════════════════════════════════
 function buildLickalotapus(c, targetScene) {
   var group = new THREE.Group();
-  var bodyMat  = new THREE.MeshLambertMaterial({ color: c.body });
-  var tongMat  = new THREE.MeshLambertMaterial({ color: c.tongue });
-  var eyeMat   = new THREE.MeshLambertMaterial({ color: c.eyes });
-  var pupilMat = new THREE.MeshLambertMaterial({ color: c.pupil });
-  var tailMat  = new THREE.MeshLambertMaterial({ color: c.tail });
-
-  // Body
-  var body = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.6, 0.35), bodyMat);
-  body.position.y = 0.3; body.castShadow = true;
-  group.add(body);
-
-  // Prison stripes
-  if (c.accent !== null && c.accent !== undefined) {
-    var stripeMat = new THREE.MeshLambertMaterial({ color: c.accent });
-    for (var sy = -0.05; sy <= 0.25; sy += 0.1) {
-      var stripe = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.04, 0.36), stripeMat);
-      stripe.position.set(0, sy + 0.3, 0);
-      group.add(stripe);
-    }
+  function mat(color) { return new THREE.MeshLambertMaterial({ color: color }); }
+  function box(name, sx, sy, sz, px, py, pz, m) {
+    var mesh = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), m || bodyM);
+    mesh.position.set(px, py, pz); mesh.castShadow = true;
+    group.add(mesh); return mesh;
+  }
+  function sphere(name, r, px, py, pz, m) {
+    var mesh = new THREE.Mesh(new THREE.SphereGeometry(r, 6, 5), m || bodyM);
+    mesh.position.set(px, py, pz);
+    group.add(mesh); return mesh;
   }
 
+  var bodyM = mat(c.body);
+  var shadowM = mat(c.bodyShadow);
+  var bellyM = mat(c.belly);
+  var tongM = mat(c.tongue);
+  var tipM = mat(c.tongueTip);
+  var tailM = mat(c.tail);
+  var tailFaceM = mat(c.tailFace);
+  var snoutM = mat(c.snout);
+  var earM = mat(c.earInner);
+  var eyeM = mat(0xf0f0f0);
+  var pupilM = mat(0x1a1a1a);
+  var highlightM = mat(0xffffff);
+  var mouthM = mat(0xc0203a);
+  var teethM = mat(0xf0ead8);
+  var pawM = mat(0x2a2a38);
+  var noseM = mat(0x1a1a28);
+  var whiskerM = mat(0xe0e0e0);
+
+  // Body
+  box("Body", 0.38, 0.42, 0.30, 0, 0.30, 0.08);
+  box("Belly", 0.26, 0.32, 0.06, 0, 0.30, 0.22, bellyM);
+  box("BodyShadow", 0.38, 0.42, 0.02, 0, 0.30, -0.07, shadowM);
+
+  // Neck (connects body to head)
+  var neckMesh = box("Neck", 0.24, 0.14, 0.22, 0, 0.56, 0.10);
+  neckMesh.userData.isHead = true; neckMesh.userData.baseY = 0.56;
   // Head
-  var head = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.38, 0.32), bodyMat);
-  head.position.set(0, 0.78, 0.05); head.castShadow = true;
-  group.add(head);
+  var headMesh = box("Head", 0.36, 0.32, 0.28, 0, 0.68, 0.10, bodyM);
+  headMesh.userData.isHead = true; headMesh.userData.baseY = 0.68;
 
-  // Eyes
-  [-0.1, 0.1].forEach(function(x) {
-    var eye = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.05), eyeMat);
-    eye.position.set(x, 0.84, 0.19);
-    group.add(eye);
-    var pupil = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 0.03), pupilMat);
-    pupil.position.set(x, 0.84, 0.22);
-    group.add(pupil);
+  // Ears
+  [-0.10, 0.10].forEach(function(x) {
+    var e1 = box("Ear", 0.08, 0.08, 0.06, x, 0.86, 0.10, bodyM);
+    e1.userData.isHead = true; e1.userData.baseY = 0.86;
+    e1.userData.isEar = true; e1.userData.earSide = x < 0 ? -1 : 1;
+    var e2 = box("EarIn", 0.04, 0.04, 0.03, x, 0.86, 0.12, earM);
+    e2.userData.isHead = true; e2.userData.baseY = 0.86;
+    e2.userData.isEar = true; e2.userData.earSide = x < 0 ? -1 : 1;
   });
 
-  // Tongue
-  var tongue = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 0.04), tongMat);
-  tongue.position.set(0, 0.56, 0.19);
-  tongue.userData.isTongue = true;
-  group.add(tongue);
-
-  // Forked tip
-  [-0.06, 0.06].forEach(function(x) {
-    var tip = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.1, 0.04), tongMat);
-    tip.position.set(x, 0.36, 0.19);
-    group.add(tip);
+  // Eyes (spheres) + eyelids for blink/wink
+  var eyelidMat = mat(c.body);
+  [-0.08, 0.08].forEach(function(x, i) {
+    var ey = sphere("Eye", 0.055, x, 0.74, 0.22, eyeM);
+    ey.userData.isHead = true; ey.userData.baseY = 0.74;
+    var pu = sphere("Pupil", 0.03, x, 0.74, 0.26, pupilM);
+    pu.userData.isHead = true; pu.userData.baseY = 0.74;
+    var hl = sphere("Highlight", 0.012, x - 0.015, 0.76, 0.27, highlightM);
+    hl.userData.isHead = true; hl.userData.baseY = 0.76;
+    // Eyelid — top of eye, drops down to cover it
+    // Pivot is at the top edge; mesh extends downward
+    var lidGroup = new THREE.Group();
+    lidGroup.position.set(x, 0.795, 0.27); // top of eye
+    var lidMesh = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.11, 0.06), eyelidMat);
+    lidMesh.position.y = -0.055; // hang down from pivot
+    lidGroup.add(lidMesh);
+    lidGroup.scale.y = 0; // start open (invisible)
+    lidGroup.userData.isHead = true; lidGroup.userData.baseY = 0.795;
+    lidGroup.userData.isEyelid = true;
+    lidGroup.userData.eyeSide = i === 0 ? 'L' : 'R';
+    group.add(lidGroup);
   });
 
-  // Arms
-  [{ x: -0.32, rz: 0.4 }, { x: 0.32, rz: -0.4 }].forEach(function(a) {
-    var arm = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.3, 0.12), bodyMat);
-    arm.position.set(a.x, 0.22, 0); arm.rotation.z = a.rz; arm.castShadow = true;
-    group.add(arm);
+  // Snout
+  var snoutMesh = box("Snout", 0.14, 0.10, 0.12, 0, 0.60, 0.24, snoutM);
+  snoutMesh.userData.isFace = true; snoutMesh.userData.baseY = 0.60;
+  [-0.025, 0.025].forEach(function(x) {
+    var n = sphere("Nostril", 0.012, x, 0.63, 0.30, noseM);
+    n.userData.isFace = true; n.userData.baseY = 0.63;
   });
 
-  // Legs
-  [-0.15, 0.15].forEach(function(x) {
-    var leg = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.25, 0.14), bodyMat);
-    leg.position.set(x, 0.01, 0); leg.castShadow = true;
-    group.add(leg);
+  // Mouth + teeth
+  var mouthMesh = box("Mouth", 0.12, 0.04, 0.08, 0, 0.54, 0.24, mouthM);
+  mouthMesh.userData.isFace = true; mouthMesh.userData.baseY = 0.54;
+  var tL = box("ToothL", 0.03, 0.04, 0.02, -0.02, 0.53, 0.28, teethM);
+  tL.userData.isFace = true; tL.userData.baseY = 0.53;
+  var tR = box("ToothR", 0.03, 0.04, 0.02, 0.02, 0.53, 0.28, teethM);
+  tR.userData.isFace = true; tR.userData.baseY = 0.53;
+
+  // Tongue — chain of segments, each parented to the previous
+  var tongueGroup = new THREE.Group();
+  tongueGroup.userData.isTongue = true;
+  tongueGroup.position.set(0, 0.62, 0.20);
+
+  var TONGUE_SEGS = 16;
+  var segLen = 0.045;
+  var prevNode = tongueGroup;
+
+  for (var ti = 0; ti < TONGUE_SEGS; ti++) {
+    var frac = ti / (TONGUE_SEGS - 1);
+    var node = new THREE.Group();
+    node.position.set(0, -segLen, 0);
+    // Base tilt: mostly flat — let the animation handle the movement
+    // First segments point forward, rest are nearly neutral
+    var tilt;
+    if (ti < 3) tilt = -0.35;          // forward out of mouth
+    else tilt = 0.02;                   // nearly flat — animation drives the flex
+    node.rotation.x = tilt;
+    node.userData.tongueIdx = ti;
+    node.userData.baseTilt = tilt;
+
+    // Width tapers, gets thinner toward tip
+    var segW = 0.10 * (1.0 - frac * 0.45);
+    var segThick = 0.04 * (1.0 - frac * 0.3);
+    var segMat = frac < 0.7 ? tongM : tipM;
+    var seg = new THREE.Mesh(new THREE.BoxGeometry(segW, segLen * 0.95, segThick), segMat);
+    seg.position.y = -segLen / 2;
+    node.add(seg);
+
+    prevNode.add(node);
+    prevNode = node;
+  }
+
+  // Slobber drips
+  var dripM = new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.25 });
+  var wetM = new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
+
+  // Drips on last few segments
+  var dripNode = tongueGroup;
+  for (var di = 0; di < TONGUE_SEGS; di++) {
+    dripNode = dripNode.children[0] || dripNode;
+  }
+  // Hanging strands from tip
+  function addStrand(len, dx) {
+    var strand = new THREE.Mesh(new THREE.BoxGeometry(0.004, len, 0.004), dripM);
+    strand.position.set(dx, -len / 2 - segLen / 2, 0);
+    strand.userData.isDrip = true;
+    dripNode.add(strand);
+    var drop = new THREE.Mesh(new THREE.SphereGeometry(0.008, 4, 3), dripM);
+    drop.position.set(dx, -len - segLen / 2, 0);
+    drop.userData.isDrip = true;
+    dripNode.add(drop);
+  }
+  addStrand(0.08, -0.02);
+  addStrand(0.06, 0.02);
+  addStrand(0.05, 0.0);
+
+  group.add(tongueGroup);
+
+  // Arms — extend forward with grabby fingers
+  [-1, 1].forEach(function(side) {
+    var armGroup = new THREE.Group();
+    armGroup.position.set(side * 0.20, 0.42, 0.08);
+    armGroup.rotation.z = side * 0.75;    // wide spread
+    armGroup.rotation.x = -1.2;          // reach forward
+    armGroup.rotation.y = side * 1.2;  // roll so thumbs on top
+    armGroup.userData.isArm = true;
+    armGroup.userData.armSide = side;
+    armGroup.userData.baseRZ = side * 0.75;
+    armGroup.userData.baseRX = -1.2;
+    armGroup.userData.baseRY = side * 1.2;
+
+    // Upper arm
+    var ua = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.14, 0.08), bodyM);
+    ua.position.y = -0.07; ua.castShadow = true;
+    armGroup.add(ua);
+
+    // Palm
+    var pm = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.04, 0.06), pawM);
+    pm.position.y = -0.16;
+    armGroup.add(pm);
+
+    // Build a finger chain: 2 segments, returns the root group
+    function makeFingerChain(px, py, pz, rotZ, isThumb) {
+      var len1 = isThumb ? 0.016 : 0.02;
+      var len2 = isThumb ? 0.014 : 0.016;
+      var w = isThumb ? 0.016 : 0.013;
+
+      var seg1 = new THREE.Group();
+      seg1.position.set(px, py, pz);
+      seg1.rotation.z = rotZ || 0;
+      seg1.userData.isFingerSeg = true;
+      var m1 = new THREE.Mesh(new THREE.BoxGeometry(w, len1, w), pawM);
+      m1.position.y = -len1 / 2;
+      seg1.add(m1);
+
+      var seg2 = new THREE.Group();
+      seg2.position.y = -len1;
+      seg2.userData.isFingerSeg = true;
+      var m2 = new THREE.Mesh(new THREE.BoxGeometry(w * 0.85, len2, w * 0.85), pawM);
+      m2.position.y = -len2 / 2;
+      seg2.add(m2);
+
+      seg1.add(seg2);
+      return seg1;
+    }
+
+    // 3 fingers
+    armGroup.add(makeFingerChain(-0.02, -0.18, 0, 0, false));
+    armGroup.add(makeFingerChain(0.0, -0.19, 0, 0, false));
+    armGroup.add(makeFingerChain(0.02, -0.18, 0, 0, false));
+    // Thumb — angled outward
+    armGroup.add(makeFingerChain(side * -0.035, -0.16, 0.015, side * -0.5, true));
+
+    group.add(armGroup);
   });
 
-  // Tail
-  var tail = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 0.4), tailMat);
-  tail.position.set(0, 0.22, -0.32); tail.rotation.x = 0.3;
-  group.add(tail);
+  // Legs + feet + toes
+  [-0.10, 0.10].forEach(function(x) {
+    box("Leg", 0.10, 0.14, 0.10, x, 0.06, 0.06, bodyM);
+    box("Foot", 0.10, 0.04, 0.14, x, -0.02, 0.08, pawM);
+    for (var t = 0; t < 3; t++) {
+      box("Toe", 0.02, 0.02, 0.03, x - 0.03 + t * 0.03, -0.03, 0.16, pawM);
+    }
+  });
 
-  // Gold crown
-  if (c.body === 0xFFD700) {
-    var crownMat = new THREE.MeshLambertMaterial({ color: 0xFFD700 });
-    var base = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.06, 0.2), crownMat);
-    base.position.set(0, 1.0, 0.05);
-    group.add(base);
-    [-0.1, 0, 0.1].forEach(function(x) {
-      var spike = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.1, 0.06), crownMat);
-      spike.position.set(x, 1.08, 0.05);
-      group.add(spike);
+  // Tail (flat beaver paddle) — attached at body back, angled 45° down
+  var tailGroup = new THREE.Group();
+  tailGroup.position.set(0, 0.15, -0.07); // attach at bottom-back of body
+  tailGroup.rotation.x = 0.75; // ~45° angle downward-backward
+
+  var tailMain = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.28, 0.04), tailM);
+  tailMain.position.y = -0.14; // hang from pivot
+  tailMain.castShadow = true;
+  tailGroup.add(tailMain);
+
+  // Waffle grid on both faces
+  var waffleMat = mat(c.tailFace);
+  var wRows = 5, wCols = 5;
+  var wW = 0.24, wH = 0.24;
+  [-0.025, 0.025].forEach(function(zOff) { // front and back of tail surfaces
+    for (var wr = 0; wr <= wRows; wr++) {
+      var wy = -0.14 - wH / 2 + (wr / wRows) * wH;
+      var wh = new THREE.Mesh(new THREE.BoxGeometry(wW, 0.006, 0.008), waffleMat);
+      wh.position.set(0, wy, zOff);
+      tailGroup.add(wh);
+    }
+    for (var wc = 0; wc <= wCols; wc++) {
+      var wx = -wW / 2 + (wc / wCols) * wW;
+      var wv = new THREE.Mesh(new THREE.BoxGeometry(0.006, wH, 0.008), waffleMat);
+      wv.position.set(wx, -0.14, zOff);
+      tailGroup.add(wv);
+    }
+  });
+
+  tailGroup.userData.isTail = true;
+  group.add(tailGroup);
+
+  // Whiskers
+  [-1, 1].forEach(function(side) {
+    for (var i = 0; i < 2; i++) {
+      var w = box("Whisker", 0.12, 0.005, 0.005,
+        side * 0.18, 0.58 + i * 0.03, 0.26, whiskerM);
+      w.userData.isFace = true; w.userData.baseY = 0.58 + i * 0.03;
+    }
+  });
+
+  // Prison stripes
+  if (c.stripes) {
+    var stripeM = mat(c.stripes);
+    [0.18, 0.28, 0.38].forEach(function(sy) {
+      box("Stripe", 0.40, 0.03, 0.32, 0, sy, 0.08, stripeM);
     });
   }
 
-  // Prison ball & chain
-  if (c.accent === 0x222222) {
-    var chainMat = new THREE.MeshLambertMaterial({ color: 0x555555 });
-    var ball = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), chainMat);
-    ball.position.set(0.3, 0.08, 0);
-    group.add(ball);
-    var chain = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 0.2), chainMat);
-    chain.position.set(0.22, 0.08, 0);
-    group.add(chain);
+  // Crown (for gold variant)
+  if (c.crown) {
+    var crownM = mat(0xFFD700);
+    box("CrownBase", 0.30, 0.05, 0.20, 0, 0.88, 0.10, crownM);
+    [-0.08, 0, 0.08].forEach(function(x) {
+      box("CrownSpike", 0.05, 0.08, 0.05, x, 0.94, 0.10, crownM);
+    });
   }
 
   if (targetScene) targetScene.add(group);
@@ -1308,7 +1588,21 @@ function buildLickalotapus(c, targetScene) {
 // ═══════════════════════════════════════════════════
 // CARD PREVIEW RENDERERS
 // ═══════════════════════════════════════════════════
+var activePreviewIdx = 0;
+var previewRenderer = null;
+var previewClock = new THREE.Clock();
+
 function initCardPreviews() {
+  // Single shared offscreen renderer
+  var offCanvas = document.createElement('canvas');
+  offCanvas.width = 200; offCanvas.height = 200;
+  previewRenderer = new THREE.WebGLRenderer({ canvas: offCanvas, alpha: true, antialias: false });
+  previewRenderer.setSize(200, 200);
+
+  var pCam = new THREE.PerspectiveCamera(50, 1, 0.01, 50);
+  pCam.position.set(0, 0.7, 2.0);
+  pCam.lookAt(0, 0.45, 0);
+
   MODELS.forEach(function(m, i) {
     var card = document.getElementById('card-' + m.id);
     if (!card) return;
@@ -1316,14 +1610,6 @@ function initCardPreviews() {
     if (!cvs) return;
 
     var pScene = new THREE.Scene();
-    var pCam = new THREE.PerspectiveCamera(50, 1, 0.01, 50);
-    pCam.position.set(0, 0.7, 2.0);
-    pCam.lookAt(0, 0.45, 0);
-
-    var pRenderer = new THREE.WebGLRenderer({ canvas: cvs, alpha: true, antialias: true });
-    pRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    pRenderer.setSize(cvs.clientWidth, cvs.clientHeight);
-
     var amb = new THREE.AmbientLight(0xffffff, 0.7);
     pScene.add(amb);
     var dir = new THREE.DirectionalLight(0xfff5e0, 1.2);
@@ -1331,20 +1617,41 @@ function initCardPreviews() {
     pScene.add(dir);
 
     var lickGroup = buildLickalotapus(m.colors, pScene);
-    previewScenes.push({ scene: pScene, camera: pCam, renderer: pRenderer, model: lickGroup, clock: new THREE.Clock() });
+    lickGroup.rotation.y = 0.3;
+    previewScenes.push({ scene: pScene, camera: pCam, model: lickGroup, canvas: cvs });
+
+    // Render static preview once
+    previewRenderer.render(pScene, pCam);
+    var ctx2d = cvs.getContext('2d');
+    cvs.width = 200; cvs.height = 200;
+    ctx2d.drawImage(offCanvas, 0, 0);
+
+    // Hover/touch activates animation
+    card.addEventListener('mouseenter', function() { activePreviewIdx = i; });
+    card.addEventListener('touchstart', function() { activePreviewIdx = i; }, { passive: true });
   });
 }
 
 function animatePreviews() {
   requestAnimationFrame(animatePreviews);
-  previewScenes.forEach(function(p) {
-    var t = p.clock.getElapsedTime();
-    p.model.rotation.y = Math.sin(t * 0.6) * 0.4;
-    p.model.position.y = Math.sin(t * 1.5) * 0.015;
+  var lb = document.getElementById('model-lightbox');
+  if (lb && lb.classList.contains('hidden')) return;
+  if (!previewRenderer) return;
+
+  var t = previewClock.getElapsedTime();
+  previewScenes.forEach(function(p, i) {
+    // Each card gets a slight time offset so they don't move in sync
+    var pt = t + i * 0.7;
+    p.model.rotation.y = Math.sin(pt * 0.8) * 0.5;
     p.model.children.forEach(function(child) {
-      if (child.userData.isTongue) child.rotation.z = Math.sin(t * 3) * 0.15;
+      if (child.userData.isTongue) {
+          animateTongueChain(child, pt);
+        }
     });
-    p.renderer.render(p.scene, p.camera);
+    previewRenderer.render(p.scene, p.camera);
+    var ctx2d = p.canvas.getContext('2d');
+    ctx2d.clearRect(0, 0, 200, 200);
+    ctx2d.drawImage(previewRenderer.domElement, 0, 0);
   });
 }
 
@@ -1425,25 +1732,17 @@ window.triggerFileUpload = function() {
 // GLB LOADING
 // ═══════════════════════════════════════════════════
 async function ensureGLTFLoader() {
-  if (window.THREE_GLTFLoader) return;
-  await new Promise(function(resolve, reject) {
-    var s = document.createElement('script');
-    s.src = GLTF_CDN;
-    s.onload = resolve;
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
-  window.THREE = THREE;
-  window.THREE_GLTFLoader = THREE.GLTFLoader || window.THREE.GLTFLoader;
+  if (_GLTFLoader) return;
+  var module = await import('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js');
+  _GLTFLoader = module.GLTFLoader;
 }
 
 async function loadGLBFromBlob(blob) {
   await ensureGLTFLoader();
   var url = URL.createObjectURL(blob);
   return new Promise(function(resolve, reject) {
-    var Loader = window.THREE_GLTFLoader || (window.THREE && window.THREE.GLTFLoader);
-    if (!Loader) { reject(new Error('GLTFLoader not available')); return; }
-    var loader = new Loader();
+    if (!_GLTFLoader) { reject(new Error('GLTFLoader not available')); return; }
+    var loader = new _GLTFLoader();
     loader.load(url, function(gltf) {
       URL.revokeObjectURL(url);
       resolve(gltf);
@@ -1458,23 +1757,45 @@ async function spawnGLBModel(blob, position) {
   if (modelGroup) { scene.remove(modelGroup); modelGroup = null; }
   var gltf;
   try { gltf = await loadGLBFromBlob(blob); } catch(e) {
-    setHint('Failed to load GLB: ' + e.message);
+    console.error('GLB load error:', e);
     return;
   }
   var model = gltf.scene;
+
+  // Debug: log what we got
+  console.log('GLB loaded, children:', model.children.length);
   var box = new THREE.Box3().setFromObject(model);
   var size = box.getSize(new THREE.Vector3());
+  console.log('Model size:', size.x, size.y, size.z);
+
+  // Auto-scale to ~1m tall
   var maxDim = Math.max(size.x, size.y, size.z);
-  model.scale.setScalar(1.0 / maxDim);
+  if (maxDim > 0.001) {
+    var targetSize = 1.0;
+    model.scale.setScalar(targetSize / maxDim);
+  }
+
+  // Sit on ground plane
   var box2 = new THREE.Box3().setFromObject(model);
   model.position.y -= box2.min.y;
+
+  // Enable shadows and ensure materials are visible
   model.traverse(function(child) {
-    if (child.isMesh) { child.castShadow = true; child.receiveShadow = true; }
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+      // Ensure material is double-sided for Blender exports
+      if (child.material) {
+        child.material.side = THREE.DoubleSide;
+      }
+    }
   });
+
   modelGroup = new THREE.Group();
   modelGroup.add(model);
   modelGroup.position.copy(position);
   scene.add(modelGroup);
+  console.log('Model placed at:', position.x, position.y, position.z);
 }
 
 // ═══════════════════════════════════════════════════
@@ -1883,11 +2204,203 @@ window.addEventListener('wheel', function(e) {
 // ═══════════════════════════════════════════════════
 // IDLE ANIMATION
 // ═══════════════════════════════════════════════════
+var tongueParams = {
+  swayAmp: 0.25, swaySpd: 5.0, swayPhase: 0.90,
+  flickAmp: 0.20, flickSpd: 14.0, flickPhase: 1.20, flickStart: 0.70,
+  bobAmp: 0.18, bobSpd: 4.0, bobPhase: 0.70,
+  extendSpd: 2.0, curlAmt: 0.25, overallSway: 0.08
+};
+window.tongueParams = tongueParams;
+
+function animateTongueChain(tongueGroup, t) {
+  var tp = tongueParams;
+  // Overall tongue sway
+  tongueGroup.rotation.y = Math.sin(t * 1.8) * tp.overallSway;
+
+  // Extend/retract: curl segments inward (retract) or straighten (extend)
+  var extendCycle = (Math.sin(t * tp.extendSpd) + 1) * 0.5; // 0→1
+  var flick = Math.max(0, Math.sin(t * 6.0)) * 0.2;
+  var extend = extendCycle + flick; // 0 = curled up, 1+ = extended
+
+  // Walk the chain and adjust each node's rotation
+  var node = tongueGroup.children[0]; // first chain node
+  var idx = 0;
+  while (node && node.userData.tongueIdx !== undefined) {
+    var baseTilt = node.userData.baseTilt || 0;
+    // When retracted (extend=0): curl inward (positive X rotation = curl up)
+    // When extended (extend=1): use base tilt
+    var curl = (1.0 - extend) * tp.curlAmt;
+    node.rotation.x = baseTilt - curl;
+    var frac = idx / 16;
+
+    // Looseness: ramps up quickly near the mouth, plateaus by mid-tongue
+    var looseness = 1.0 - Math.exp(-frac * 4.0); // fast exponential rise, ~80% loose by 1/3 of tongue
+
+    // Primary sway: bell-curve amplitude, wave travels along tongue
+    var swayA = Math.sin(frac * Math.PI) * tp.swayAmp;
+    var sway = Math.sin(t * tp.swaySpd - idx * tp.swayPhase) * swayA;
+
+    // Tip flick: high frequency, ramps up after flickStart
+    var flickA = Math.max(0, (frac - tp.flickStart) / (1.0 - tp.flickStart)) * tp.flickAmp;
+    var flick = Math.sin(t * tp.flickSpd - idx * tp.flickPhase) * flickA;
+
+    // Secondary wobble: each segment has its own frequency, scaled by looseness
+    // This makes each joint flex independently
+    var wobbleZ = Math.sin(t * 7.3 + idx * 2.1) * 0.06 * looseness;
+    var wobbleX = Math.sin(t * 5.7 + idx * 1.7) * 0.04 * looseness;
+
+    node.rotation.z = sway + flick + wobbleZ;
+
+    // Vertical: light gravity + wave + independent wobble
+    var gravity = looseness * 0.08; // droop scales with looseness — kicks in fast
+    var bobA = frac * tp.bobAmp;
+    node.rotation.x = baseTilt - curl + gravity + Math.sin(t * tp.bobSpd - idx * tp.bobPhase) * bobA + wobbleX;
+
+    idx++;
+    node = node.children[0] || null;
+  }
+}
+
+// Blink state
+var blinkTimer = 0;
+var blinkState = 0; // 0=open, 1=closing, 2=closed, 3=opening
+var blinkDuration = 0.12;
+var blinkSide = 'both'; // 'both', 'L', or 'R'
+var nextBlinkAt = 1.5 + Math.random() * 2;
+
+function updateBlink(t, dt) {
+  blinkTimer += dt;
+  if (blinkState === 0 && blinkTimer > nextBlinkAt) {
+    blinkState = 1;
+    blinkTimer = 0;
+    // 20% chance of wink instead of blink
+    if (Math.random() < 0.2) {
+      blinkSide = Math.random() < 0.5 ? 'L' : 'R';
+    } else {
+      blinkSide = 'both';
+    }
+    nextBlinkAt = 1.5 + Math.random() * 2;
+  }
+  if (blinkState === 1 && blinkTimer > blinkDuration) { blinkState = 2; blinkTimer = 0; }
+  if (blinkState === 2 && blinkTimer > 0.06) { blinkState = 3; blinkTimer = 0; }
+  if (blinkState === 3 && blinkTimer > blinkDuration) { blinkState = 0; blinkTimer = 0; }
+}
+
+function getEyelidScale(side) {
+  var active = (blinkSide === 'both' || blinkSide === side);
+  if (!active) return 0;
+  if (blinkState === 0) return 0;
+  if (blinkState === 1) return blinkTimer / blinkDuration; // closing
+  if (blinkState === 2) return 1; // fully closed
+  if (blinkState === 3) return 1 - blinkTimer / blinkDuration; // opening
+  return 0;
+}
+
+// Ear flicker state
+var earFlickTimer = 0;
+var earFlickActive = false;
+var earFlickSide = 0; // -1=left, 1=right, 0=both
+var nextEarFlickAt = 3 + Math.random() * 5;
+var earFlickPhase = 0;
+
+function updateEarFlick(t, dt) {
+  earFlickTimer += dt;
+  if (!earFlickActive && earFlickTimer > nextEarFlickAt) {
+    earFlickActive = true;
+    earFlickTimer = 0;
+    earFlickPhase = 0;
+    // Random: one ear or both
+    var r = Math.random();
+    if (r < 0.4) earFlickSide = -1;
+    else if (r < 0.8) earFlickSide = 1;
+    else earFlickSide = 0;
+    nextEarFlickAt = 2 + Math.random() * 5;
+  }
+  if (earFlickActive) {
+    earFlickPhase += dt * 12; // fast flick
+    if (earFlickPhase > Math.PI * 3) { // ~1.5 flicks then stop
+      earFlickActive = false;
+      earFlickTimer = 0;
+    }
+  }
+}
+
+function getEarFlick(side) {
+  if (!earFlickActive) return 0;
+  if (earFlickSide !== 0 && earFlickSide !== side) return 0;
+  // Quick oscillation that decays
+  var decay = Math.max(0, 1 - earFlickPhase / (Math.PI * 3));
+  return Math.sin(earFlickPhase) * 0.25 * decay;
+}
+
+var lastAnimTime = 0;
 function animateModel(t) {
   if (!modelGroup) return;
-  // Tongue wiggle only — don't override position.y or rotation.z (controlled by widgets)
+  var tp = tongueParams;
+  var dt = t - lastAnimTime;
+  lastAnimTime = t;
+
+  updateBlink(t, dt);
+  updateEarFlick(t, dt);
+
+  // Tongue extend cycle (same as in animateTongueChain)
+  var extendCycle = (Math.sin(t * tp.extendSpd) + 1) * 0.5;
+  var lickPhase = Math.sin(t * tp.extendSpd); // -1 to 1
+
   modelGroup.children.forEach(function(child) {
-    if (child.userData.isTongue) child.rotation.z = Math.sin(t * 3) * 0.15;
+    if (child.userData.isTongue) {
+      animateTongueChain(child, t);
+      return;
+    }
+
+    // Face parts (snout, mouth, teeth, nostrils) — bob up/down with lick
+    if (child.userData.isFace) {
+      child.position.y = child.userData.baseY - lickPhase * 0.008;
+    }
+
+    // Head parts (head, neck, ears, eyes) — subtle tilt with lick
+    if (child.userData.isHead) {
+      child.position.y = child.userData.baseY - lickPhase * 0.004;
+      child.rotation.x = -lickPhase * 0.02;
+      child.rotation.z = Math.sin(t * tp.extendSpd * 0.5) * 0.01;
+      // Ear flicker — rotate Z for a quick twitch
+      if (child.userData.isEar) {
+        child.rotation.z += getEarFlick(child.userData.earSide) * child.userData.earSide;
+      }
+    }
+
+    // Arms — sway + grabbing fingers
+    if (child.userData.isArm && child.userData.baseRZ !== undefined) {
+      var side = child.userData.armSide;
+      // Hug motion: arms gently open and close
+      var hugCycle = Math.sin(t * 1.2) * 0.12; // open/close
+      var reach = Math.sin(t * 1.8 + side * 0.5) * 0.08; // slight forward reach
+      var lickLift = lickPhase * 0.06 * side;
+      child.rotation.z = child.userData.baseRZ - hugCycle * side + lickLift;
+      child.rotation.x = child.userData.baseRX + reach;
+      child.rotation.y = child.userData.baseRY;
+
+      // Grabbing cycle on fingers — curl in and out
+      var grabPhase = (Math.sin(t * 2.5 + side * 1.0) + 1) * 0.5; // 0→1
+      child.children.forEach(function(ch) {
+        if (!ch.userData.isFingerSeg) return;
+        // Curl: rotate X to close fingers inward
+        ch.rotation.x = grabPhase * 0.8;
+        // Also curl the second segment (child of this one)
+        ch.children.forEach(function(inner) {
+          if (inner.userData.isFingerSeg) {
+            inner.rotation.x = grabPhase * 1.0;
+          }
+        });
+      });
+    }
+
+    // Eyelids — thin line when open, scales down to cover eye when closing
+    if (child.userData.isEyelid) {
+      var lidAmt = getEyelidScale(child.userData.eyeSide);
+      child.visible = true;
+      child.scale.y = 0.15 + lidAmt * 0.85; // 0.15 = thin resting lid, 1.0 = fully closed
+    }
   });
 }
 
@@ -1896,6 +2409,9 @@ function animateModel(t) {
 // ═══════════════════════════════════════════════════
 function animate() {
   requestAnimationFrame(animate);
+  // Skip main render when lightbox is covering everything
+  var lb = document.getElementById('model-lightbox');
+  if (lb && !lb.classList.contains('hidden')) return;
   var t = clock.getElapsedTime();
   animateModel(t);
   renderer.render(scene, camera);
