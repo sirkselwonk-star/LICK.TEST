@@ -1629,11 +1629,11 @@ function buildLickalotapus(c, targetScene) {
   addStrand(15, 0.0, 0.07, dripM);
 
   // Saliva fling particles — stored on the group for animation
-  var flingM = new THREE.MeshLambertMaterial({ color: 0xd0e8f8, transparent: true, opacity: 0.7 });
+  var flingM = new THREE.MeshLambertMaterial({ color: 0xc0dff8, transparent: true, opacity: 0.9 });
   var flingParticles = [];
-  var MAX_FLINGS = 12;
+  var MAX_FLINGS = 20;
   for (var fi = 0; fi < MAX_FLINGS; fi++) {
-    var fMesh = new THREE.Mesh(new THREE.SphereGeometry(0.008, 4, 3), flingM);
+    var fMesh = new THREE.Mesh(new THREE.SphereGeometry(0.02, 5, 4), flingM);
     fMesh.visible = false;
     fMesh.userData.vel = { x: 0, y: 0, z: 0 };
     fMesh.userData.life = 0;
@@ -2748,7 +2748,7 @@ function animateModel(t) {
     modelGroup.userData.lastTipZ = tipWorldPos.z;
 
     // Spawn fling when tip is whipping fast
-    if (tipSpeed > 0.008 && Math.random() < 0.3) {
+    if (tipSpeed > 0.005 && Math.random() < 0.5) {
       for (var pi = 0; pi < particles.length; pi++) {
         if (!particles[pi].visible) {
           var p = particles[pi];
@@ -2758,11 +2758,11 @@ function animateModel(t) {
           modelGroup.worldToLocal(localPos);
           p.position.copy(localPos);
           // Fling in the direction of motion + random spread
-          p.userData.vel.x = (Math.random() - 0.5) * 0.04;
-          p.userData.vel.y = -Math.random() * 0.02 - 0.005;
-          p.userData.vel.z = (Math.random() - 0.5) * 0.04;
-          p.userData.life = 0.8 + Math.random() * 0.5;
-          p.scale.setScalar(0.5 + Math.random() * 1.0);
+          p.userData.vel.x = (Math.random() - 0.5) * 0.08;
+          p.userData.vel.y = -Math.random() * 0.03 - 0.01;
+          p.userData.vel.z = (Math.random() - 0.5) * 0.08;
+          p.userData.life = 1.2 + Math.random() * 0.8;
+          p.scale.setScalar(1.0 + Math.random() * 1.5);
           break;
         }
       }
@@ -2778,7 +2778,7 @@ function animateModel(t) {
       pp.position.y += pp.userData.vel.y * dt * 2;
       pp.position.z += pp.userData.vel.z * dt * 2;
       pp.userData.vel.y -= 0.015 * dt; // gravity
-      pp.material.opacity = Math.min(0.4, pp.userData.life * 0.5);
+      pp.material.opacity = Math.min(0.8, pp.userData.life * 0.7);
     }
   }
 }
