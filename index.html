@@ -2051,7 +2051,7 @@ async function init() {
   await startCamera();
 
   window.addEventListener('resize', onResize);
-  document.getElementById('tap-plane').addEventListener('click', onTap);
+  // Tap-to-place removed — model is placed automatically
   document.getElementById('tap-plane').addEventListener('touchstart', onTouchStart, { passive: false });
   document.getElementById('tap-plane').addEventListener('touchmove', onTouchMove, { passive: false });
   document.getElementById('tap-plane').addEventListener('touchend', onTouchEnd, { passive: false });
