@@ -964,54 +964,6 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
   }
 
-  /* ── Tongue Tuner Panel ── */
-  #tongue-tuner {
-    position: fixed; top: 50%; left: 10px;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.9);
-    border: 1px solid rgba(232,96,122,0.4);
-    border-radius: 8px;
-    padding: 12px 14px;
-    z-index: 35;
-    font-family: 'Courier New', monospace;
-    backdrop-filter: blur(8px);
-    display: none;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  #tongue-tuner.open { display: block; }
-  #tongue-tuner h4 {
-    font-size: 11px; letter-spacing: 2px;
-    color: #e8607a; text-transform: uppercase;
-    margin: 0 0 8px; text-align: center;
-  }
-  #tongue-tuner label {
-    display: block; font-size: 10px; letter-spacing: 1px;
-    color: #fff; text-transform: uppercase;
-    margin-top: 8px; margin-bottom: 3px;
-  }
-  #tongue-tuner label:first-of-type { margin-top: 0; }
-  #tongue-tuner input[type="range"] {
-    width: 180px; accent-color: #e8607a; height: 4px;
-  }
-  #tongue-tuner .tt-val {
-    font-size: 10px; color: #e8607a; font-weight: bold;
-    float: right;
-  }
-  #tongue-tuner-toggle {
-    position: fixed; top: 50%; left: 0;
-    transform: translateY(-50%);
-    background: rgba(232,96,122,0.2);
-    border: 1px solid rgba(232,96,122,0.4); border-left: none;
-    border-radius: 0 4px 4px 0;
-    color: rgba(232,96,122,0.7);
-    font-family: 'Courier New', monospace; font-size: 9px;
-    letter-spacing: 1px; padding: 6px 4px;
-    cursor: pointer; writing-mode: vertical-rl;
-    text-transform: uppercase; z-index: 35;
-  }
-  #tongue-tuner-toggle:hover { background: rgba(232,96,122,0.3); }
-
   /* ── Mobile D-pad ── */
   #mobile-dpad {
     display: none;
@@ -1209,51 +1161,6 @@
   </div>
 </div>
 
-
-<!-- ══════ TONGUE TUNER ══════ -->
-<button id="tongue-tuner-toggle" onclick="document.getElementById('tongue-tuner').classList.toggle('open')">👅 TUNE</button>
-<div id="tongue-tuner">
-  <h4>👅 Tongue Tuner</h4>
-
-  <label>Sway Amplitude <span class="tt-val" id="tt-sway-amp-val">0.25</span></label>
-  <input type="range" id="tt-sway-amp" min="0" max="300" value="22" oninput="tongueParams.swayAmp=this.value/100;document.getElementById('tt-sway-amp-val').textContent=(this.value/100).toFixed(2)">
-
-  <label>Sway Speed <span class="tt-val" id="tt-sway-spd-val">5.0</span></label>
-  <input type="range" id="tt-sway-spd" min="0" max="500" value="60" oninput="tongueParams.swaySpd=this.value/10;document.getElementById('tt-sway-spd-val').textContent=(this.value/10).toFixed(1)">
-
-  <label>Sway Phase <span class="tt-val" id="tt-sway-phase-val">0.90</span></label>
-  <input type="range" id="tt-sway-phase" min="0" max="300" value="40" oninput="tongueParams.swayPhase=this.value/100;document.getElementById('tt-sway-phase-val').textContent=(this.value/100).toFixed(2)">
-
-  <label>Flick Amplitude <span class="tt-val" id="tt-flick-amp-val">0.20</span></label>
-  <input type="range" id="tt-flick-amp" min="0" max="300" value="15" oninput="tongueParams.flickAmp=this.value/100;document.getElementById('tt-flick-amp-val').textContent=(this.value/100).toFixed(2)">
-
-  <label>Flick Speed <span class="tt-val" id="tt-flick-spd-val">14.0</span></label>
-  <input type="range" id="tt-flick-spd" min="0" max="500" value="160" oninput="tongueParams.flickSpd=this.value/10;document.getElementById('tt-flick-spd-val').textContent=(this.value/10).toFixed(1)">
-
-  <label>Flick Phase <span class="tt-val" id="tt-flick-phase-val">1.20</span></label>
-  <input type="range" id="tt-flick-phase" min="0" max="400" value="50" oninput="tongueParams.flickPhase=this.value/100;document.getElementById('tt-flick-phase-val').textContent=(this.value/100).toFixed(2)">
-
-  <label>Flick Start <span class="tt-val" id="tt-flick-start-val">0.70</span></label>
-  <input type="range" id="tt-flick-start" min="0" max="100" value="65" oninput="tongueParams.flickStart=this.value/100;document.getElementById('tt-flick-start-val').textContent=(this.value/100).toFixed(2)">
-
-  <label>Bob Amplitude <span class="tt-val" id="tt-bob-amp-val">0.18</span></label>
-  <input type="range" id="tt-bob-amp" min="0" max="300" value="14" oninput="tongueParams.bobAmp=this.value/100;document.getElementById('tt-bob-amp-val').textContent=(this.value/100).toFixed(2)">
-
-  <label>Bob Speed <span class="tt-val" id="tt-bob-spd-val">4.0</span></label>
-  <input type="range" id="tt-bob-spd" min="0" max="500" value="45" oninput="tongueParams.bobSpd=this.value/10;document.getElementById('tt-bob-spd-val').textContent=(this.value/10).toFixed(1)">
-
-  <label>Bob Phase <span class="tt-val" id="tt-bob-phase-val">0.70</span></label>
-  <input type="range" id="tt-bob-phase" min="0" max="300" value="55" oninput="tongueParams.bobPhase=this.value/100;document.getElementById('tt-bob-phase-val').textContent=(this.value/100).toFixed(2)">
-
-  <label>Extend Speed <span class="tt-val" id="tt-extend-val">2.0</span></label>
-  <input type="range" id="tt-extend" min="0" max="200" value="18" oninput="tongueParams.extendSpd=this.value/10;document.getElementById('tt-extend-val').textContent=(this.value/10).toFixed(1)">
-
-  <label>Curl Amount <span class="tt-val" id="tt-curl-val">0.25</span></label>
-  <input type="range" id="tt-curl" min="0" max="200" value="20" oninput="tongueParams.curlAmt=this.value/100;document.getElementById('tt-curl-val').textContent=(this.value/100).toFixed(2)">
-
-  <label>Overall Sway <span class="tt-val" id="tt-osway-val">0.08</span></label>
-  <input type="range" id="tt-osway" min="0" max="100" value="6" oninput="tongueParams.overallSway=this.value/100;document.getElementById('tt-osway-val').textContent=(this.value/100).toFixed(2)">
-</div>
 
 <!-- ══════ UNDO BAR ══════ -->
 <div id="undo-bar">
@@ -2667,7 +2574,7 @@ var tongueParams = {
   bobAmp: 0.14, bobSpd: 4.5, bobPhase: 0.55,
   extendSpd: 1.8, curlAmt: 0.20, overallSway: 0.06
 };
-window.tongueParams = tongueParams;
+
 
 function animateTongueChain(tongueGroup, t) {
   var tp = tongueParams;
