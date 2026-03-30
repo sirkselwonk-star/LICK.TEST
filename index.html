@@ -1833,26 +1833,6 @@ window.selectModel = function(id) {
   placeAt(pos);
 };
 
-
-  // Enable shadows and ensure materials are visible
-  model.traverse(function(child) {
-    if (child.isMesh) {
-      child.castShadow = true;
-      child.receiveShadow = true;
-      // Ensure material is double-sided for Blender exports
-      if (child.material) {
-        child.material.side = THREE.DoubleSide;
-      }
-    }
-  });
-
-  modelGroup = new THREE.Group();
-  modelGroup.add(model);
-  modelGroup.position.copy(position);
-  scene.add(modelGroup);
-  console.log('Model placed at:', position.x, position.y, position.z);
-}
-
 // ═══════════════════════════════════════════════════
 // MAIN THREE.JS SCENE
 // ═══════════════════════════════════════════════════
