@@ -100,19 +100,22 @@
 
   .lb-header .sub {
     margin-top: 8px;
-    font-size: 0.7rem;
-    color: #665540;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #FFD600;
     letter-spacing: 0.25em;
     text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255,214,0,0.5), 0 1px 3px rgba(0,0,0,0.8);
   }
 
   .lb-badge {
     display: inline-block;
     margin-top: 12px;
-    padding: 4px 16px;
+    padding: 6px 18px;
     border: 1px solid #FF6B1A;
     border-radius: 40px;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
+    font-weight: bold;
     letter-spacing: 0.2em;
     color: #FF6B1A;
     text-transform: uppercase;
@@ -221,37 +224,20 @@
   }
 
   .card-name {
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: bold;
     letter-spacing: 0.12em;
     color: #FF6B1A;
     text-transform: uppercase;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
   }
 
   .card-desc {
     margin-top: 6px;
-    font-size: 0.68rem;
-    color: #666;
-    letter-spacing: 0.04em;
-    line-height: 1.6;
-  }
-
-  .card-traits {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-top: 8px;
-  }
-
-  .trait-pill {
-    font-size: 0.58rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: 0.8rem;
     color: #FFD600;
-    border: 1px solid #332b00;
-    padding: 2px 8px;
-    border-radius: 2px;
-    white-space: nowrap;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
   }
 
 
@@ -662,8 +648,79 @@
     pointer-events: all;
   }
 
-  #loading-screen { background: #000; z-index: 200; }
+  #loading-screen { background: #000; z-index: 200; display: none; }
   #error-screen { background: rgba(0,0,0,0.9); z-index: 200; display: none; }
+
+  /* ── Contest Start Page ── */
+  #contest-screen {
+    background: #000; z-index: 210;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #contest-screen .hero-canvas {
+    width: 220px; height: 220px;
+    margin: 0 auto 16px;
+    display: block;
+    border-radius: 50%;
+    border: 2px solid rgba(255,107,26,0.3);
+    background: radial-gradient(ellipse at center, #1a1208 0%, #000 70%);
+  }
+  #contest-screen h1 {
+    font-size: 28px;
+    letter-spacing: 5px;
+    color: #FF6B1A;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+  }
+  #contest-screen .contest-tagline {
+    font-size: 15px;
+    color: #FFD600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  #contest-screen .contest-desc {
+    font-size: 16px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.8;
+    max-width: 380px;
+    margin: 0 auto 10px;
+    letter-spacing: 0.5px;
+  }
+  #contest-screen .contest-disclaimer {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.7;
+    max-width: 360px;
+    margin: 0 auto 28px;
+    letter-spacing: 0.3px;
+  }
+  #contest-screen .enter-btn {
+    display: inline-block;
+    padding: 16px 40px;
+    background: rgba(255,107,26,0.15);
+    border: 2px solid #FF6B1A;
+    color: #FF6B1A;
+    font-family: 'Courier New', monospace;
+    font-size: 17px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    margin-bottom: 30px;
+  }
+  #contest-screen .enter-btn:hover {
+    background: #FF6B1A;
+    color: #000;
+    box-shadow: 0 0 24px rgba(255,107,26,0.5);
+  }
+  #contest-screen .enter-btn:active {
+    background: #FFD600;
+    border-color: #FFD600;
+    color: #000;
+  }
 
   .screen-icon { font-size: 52px; margin-bottom: 16px; }
   .screen-title {
@@ -879,6 +936,25 @@
 <canvas id="ar-canvas"></canvas>
 <div id="tap-plane"></div>
 
+<!-- ══════ CONTEST START PAGE ══════ -->
+<div id="contest-screen" class="screen">
+  <h1>Lickalotapus</h1>
+  <canvas class="hero-canvas" id="hero-canvas"></canvas>
+  <div class="contest-tagline">In The Wild</div>
+  <div class="contest-desc">
+    Snap a photo of Lickalotapus out in the real world using your camera.
+    Pick your favourite model, place it in the wild, and share your best
+    shot on X with <strong style="color:#FFD600">#LickalotapusInTheWild</strong>,
+    tag three friends, and hold 50,000 $LLP on Solana for a chance to win!
+  </div>
+  <div class="contest-disclaimer">
+    By entering you agree that submitted photos may be shared and reposted.
+    No purchase necessary. Contest is for fun &mdash; prizes and rules TBD.
+    Must have camera access to participate.
+  </div>
+  <button class="enter-btn" onclick="enterContest()">Enter The Contest!</button>
+</div>
+
 <!-- ══════ LOADING SCREEN ══════ -->
 <div id="loading-screen" class="screen">
   <div class="screen-icon">👅</div>
@@ -1041,7 +1117,7 @@ const MODELS = [
     id: 'og',
     name: 'OG Lick',
     tag: 'CLASSIC',
-    desc: 'The original brown beaver. Big eyes, long tongue, zero shame.',
+    desc: 'The original Lickalotapus. Big eyes, long tongue, zero shame.',
     traits: ['CLASSIC', 'PINK TONGUE', 'OG'],
     colors: Object.assign({}, OG_BODY, { tongue: 0xe8607a, tongueTip: 0xff9aaa, tail: 0x1a1a2a, tailFace: 0x252535, stripes: null })
   },
@@ -1695,28 +1771,54 @@ function buildLickalotapus(c, targetScene) {
     for (var si = 0; si < 10; si++) {
       var sy = bodyBottom + si * stripeH;
       var sm = (si % 2 === 0) ? blackM : whiteM;
-      box("Stripe", 0.40, stripeH, 0.32, 0, sy + stripeH / 2, 0.08, sm);
+      box("Stripe", 0.40, stripeH, 0.28, 0, sy + stripeH / 2, 0.10, sm);
     }
 
     // Ball and chain on right ankle
-    var ironM = mat(0x3a3a3a);
-    var darkIronM = mat(0x2a2a2a);
-    // Ankle shackle
-    var shackle = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.012, 6, 8), ironM);
-    shackle.position.set(0.10, 0.01, 0.06);
+    var ironM = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.4, metalness: 0.8 });
+    var darkIronM = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.3, metalness: 0.9 });
+
+    // Ankle shackle — thick band
+    var shackle = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.015, 8, 12), ironM);
+    shackle.position.set(0.10, 0.02, 0.06);
     shackle.rotation.x = Math.PI / 2;
     group.add(shackle);
-    // Chain links
-    for (var ci = 0; ci < 5; ci++) {
-      var link = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.005, 4, 6), ironM);
-      link.position.set(0.10 + (ci + 1) * 0.045, -0.02, 0.06);
+    // Shackle rivets
+    [-1, 1].forEach(function(s) {
+      var rivet = new THREE.Mesh(new THREE.SphereGeometry(0.008, 4, 4), darkIronM);
+      rivet.position.set(0.10 + s * 0.04, 0.02, 0.06);
+      group.add(rivet);
+    });
+
+    // Chain — alternating link orientations with slight droop
+    var chainLen = 7;
+    for (var ci = 0; ci < chainLen; ci++) {
+      var frac = (ci + 1) / (chainLen + 1);
+      var cx = 0.10 + frac * 0.32;
+      var sag = Math.sin(frac * Math.PI) * -0.04;
+      var cy = -0.01 + sag;
+      var link = new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.006, 6, 8), ironM);
+      link.position.set(cx, cy, 0.06);
       link.rotation.y = (ci % 2 === 0) ? 0 : Math.PI / 2;
+      link.rotation.z = (ci % 2 === 0) ? 0.15 : -0.15;
       group.add(link);
     }
-    // Iron ball
-    var ball = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), darkIronM);
-    ball.position.set(0.38, -0.02, 0.06);
+
+    // Iron ball — larger with ring attachment
+    var ball = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), darkIronM);
+    ball.position.set(0.44, -0.04, 0.06);
     group.add(ball);
+    // Ring on top of ball
+    var ballRing = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.006, 6, 8), ironM);
+    ballRing.position.set(0.44, 0.04, 0.06);
+    ballRing.rotation.x = Math.PI / 2;
+    group.add(ballRing);
+    // Highlight sheen on ball
+    var sheen = new THREE.Mesh(new THREE.SphereGeometry(0.091, 10, 8), new THREE.MeshStandardMaterial({
+      color: 0x666666, roughness: 0.2, metalness: 1.0, transparent: true, opacity: 0.15
+    }));
+    sheen.position.copy(ball.position);
+    group.add(sheen);
   }
 
   // Crown (for gold variant)
@@ -1810,7 +1912,6 @@ function renderLightboxCards() {
   var html = '';
 
   MODELS.forEach(function(m) {
-    var traits = m.traits.map(function(t) { return '<span class="trait-pill">' + t + '</span>'; }).join('');
     html += '<div class="model-card" id="card-' + m.id + '" onclick="selectModel(\'' + m.id + '\')">' +
       '<div class="card-preview"><canvas></canvas>' +
         '<div class="card-tag-wrap"><div class="card-tag"><span>' + m.tag + '</span></div></div>' +
@@ -1818,7 +1919,6 @@ function renderLightboxCards() {
       '<div class="card-info">' +
         '<div class="card-name">' + m.name + '</div>' +
         '<div class="card-desc">' + m.desc + '</div>' +
-        '<div class="card-traits">' + traits + '</div>' +
       '</div>' +
     '</div>';
   });
@@ -2929,9 +3029,144 @@ window.toggleStylePanel = function() {
 };
 
 // ═══════════════════════════════════════════════════
-// GO
 // ═══════════════════════════════════════════════════
-init();
+// CONTEST START PAGE — hero model preview
+// ═══════════════════════════════════════════════════
+(function initHeroPreview() {
+  var cvs = document.getElementById('hero-canvas');
+  cvs.width = 220; cvs.height = 220;
+  var heroRenderer = new THREE.WebGLRenderer({ canvas: cvs, alpha: true, antialias: true });
+  heroRenderer.setSize(220, 220);
+  heroRenderer.outputEncoding = THREE.sRGBEncoding;
+
+  var heroScene = new THREE.Scene();
+  heroScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  var hSun = new THREE.DirectionalLight(0xfff5e0, 1.2);
+  hSun.position.set(3, 8, 5);
+  heroScene.add(hSun);
+
+  var heroCam = new THREE.PerspectiveCamera(50, 1, 0.01, 50);
+  heroCam.position.set(0, 0.7, 2.0);
+  heroCam.lookAt(0, 0.45, 0);
+
+  var heroModel = buildLickalotapus(MODELS[0].colors, heroScene);
+  var heroClock = new THREE.Clock();
+  var heroLastT = 0;
+
+  // Local blink state for hero
+  var hBlinkTimer = 0, hBlinkState = 0, hBlinkDur = 0.12;
+  var hBlinkSide = 'both', hNextBlink = 1.5 + Math.random() * 2;
+  var hLidL = 0, hLidR = 0;
+
+  // Local ear flick state for hero
+  var hEarTimer = 0, hEarFlicking = false, hEarSide = 1;
+  var hEarAmt = 0, hNextEar = 2 + Math.random() * 3;
+
+  function animateHero() {
+    if (!document.getElementById('contest-screen') ||
+        document.getElementById('contest-screen').style.display === 'none') return;
+    requestAnimationFrame(animateHero);
+    var t = heroClock.getElapsedTime();
+    var dt = t - heroLastT;
+    heroLastT = t;
+    var tp = tongueParams;
+
+    // Slow turntable rotation
+    heroModel.rotation.y = Math.sin(t * 0.8) * 0.5;
+
+    // Blink
+    hBlinkTimer += dt;
+    if (hBlinkState === 0 && hBlinkTimer > hNextBlink) {
+      hBlinkState = 1; hBlinkTimer = 0;
+      hBlinkSide = Math.random() < 0.2 ? (Math.random() < 0.5 ? 'L' : 'R') : 'both';
+    }
+    if (hBlinkState === 1) {
+      var p1 = Math.min(1, hBlinkTimer / hBlinkDur);
+      if (hBlinkSide !== 'R') hLidL = p1;
+      if (hBlinkSide !== 'L') hLidR = p1;
+      if (p1 >= 1) { hBlinkState = 2; hBlinkTimer = 0; }
+    } else if (hBlinkState === 2) {
+      if (hBlinkTimer > 0.05) { hBlinkState = 3; hBlinkTimer = 0; }
+    } else if (hBlinkState === 3) {
+      var p3 = Math.min(1, hBlinkTimer / hBlinkDur);
+      if (hBlinkSide !== 'R') hLidL = 1 - p3;
+      if (hBlinkSide !== 'L') hLidR = 1 - p3;
+      if (p3 >= 1) { hBlinkState = 0; hBlinkTimer = 0; hLidL = 0; hLidR = 0; hNextBlink = 1.5 + Math.random() * 2; }
+    }
+
+    // Ear flick
+    hEarTimer += dt;
+    if (!hEarFlicking && hEarTimer > hNextEar) {
+      hEarFlicking = true; hEarTimer = 0; hEarSide = Math.random() < 0.5 ? -1 : 1;
+    }
+    if (hEarFlicking) {
+      hEarAmt = Math.sin(hEarTimer * 25) * Math.max(0, 1 - hEarTimer * 4) * 0.3;
+      if (hEarTimer > 0.3) { hEarFlicking = false; hEarAmt = 0; hEarTimer = 0; hNextEar = 2 + Math.random() * 3; }
+    }
+
+    var extendCycle = (Math.sin(t * tp.extendSpd) + 1) * 0.5;
+    var lickPhase = Math.sin(t * tp.extendSpd);
+
+    heroModel.children.forEach(function(child) {
+      if (child.userData.isTongue) {
+        animateTongueChain(child, t);
+        return;
+      }
+      if (child.userData.isFace) {
+        child.position.y = child.userData.baseY - lickPhase * 0.008;
+      }
+      if (child.userData.isHead) {
+        child.position.y = child.userData.baseY - lickPhase * 0.004;
+        child.rotation.x = -lickPhase * 0.02;
+        child.rotation.z = Math.sin(t * tp.extendSpd * 0.5) * 0.01;
+        if (child.userData.isEar) {
+          var earFlick = (child.userData.earSide === hEarSide) ? hEarAmt : 0;
+          child.rotation.z += earFlick * child.userData.earSide;
+        }
+      }
+      if (child.userData.isArm && child.userData.baseRZ !== undefined) {
+        var side = child.userData.armSide;
+        var hugCycle = Math.sin(t * 1.2) * 0.18;
+        var reach = Math.sin(t * 1.8 + side * 0.5) * 0.15;
+        var lickLift = lickPhase * 0.06 * side;
+        child.rotation.z = child.userData.baseRZ - hugCycle * side + lickLift;
+        child.rotation.x = child.userData.baseRX + reach;
+        child.rotation.y = child.userData.baseRY;
+        child.children.forEach(function(ch) {
+          if (!ch.userData.isFingerSeg) return;
+          var grabPhase = (Math.sin(t * 2.5 + side * 1.0) + 1) * 0.5;
+          ch.rotation.x = grabPhase * 0.8;
+          ch.children.forEach(function(inner) {
+            if (inner.userData.isFingerSeg) inner.rotation.x = grabPhase * 1.0;
+          });
+        });
+      }
+      if (child.userData.isEyelid) {
+        var lidAmt = child.userData.eyeSide === 'L' ? hLidL : hLidR;
+        child.visible = true;
+        child.scale.y = 0.15 + lidAmt * 0.85;
+      }
+    });
+
+    // Drip strands
+    heroModel.traverse(function(obj) {
+      if (obj.userData.isDripStrand) {
+        var cycle = ((t * obj.userData.dripSpeed + obj.userData.dripPhase) % (Math.PI * 2)) / (Math.PI * 2);
+        obj.scale.y = cycle < 0.8 ? 0.5 + cycle * 0.75 : 0.5;
+      }
+    });
+
+    heroRenderer.render(heroScene, heroCam);
+  }
+  animateHero();
+})();
+
+window.enterContest = function() {
+  document.getElementById('contest-screen').style.display = 'none';
+  document.getElementById('loading-screen').style.display = 'flex';
+  init();
+};
+
 </script>
 
 </body>
