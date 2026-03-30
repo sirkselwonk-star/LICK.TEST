@@ -235,29 +235,9 @@
   .card-desc {
     margin-top: 6px;
     font-size: 0.8rem;
-    color: #aaa;
+    color: #FFD600;
     letter-spacing: 0.04em;
     line-height: 1.7;
-  }
-
-  .card-traits {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 10px;
-  }
-
-  .trait-pill {
-    font-size: 0.68rem;
-    font-weight: bold;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #FFD600;
-    border: 1px solid #4d4200;
-    padding: 3px 10px;
-    border-radius: 2px;
-    white-space: nowrap;
-    text-shadow: 0 0 6px rgba(255,214,0,0.3);
   }
 
 
@@ -1932,7 +1912,6 @@ function renderLightboxCards() {
   var html = '';
 
   MODELS.forEach(function(m) {
-    var traits = m.traits.map(function(t) { return '<span class="trait-pill">' + t + '</span>'; }).join('');
     html += '<div class="model-card" id="card-' + m.id + '" onclick="selectModel(\'' + m.id + '\')">' +
       '<div class="card-preview"><canvas></canvas>' +
         '<div class="card-tag-wrap"><div class="card-tag"><span>' + m.tag + '</span></div></div>' +
@@ -1940,7 +1919,6 @@ function renderLightboxCards() {
       '<div class="card-info">' +
         '<div class="card-name">' + m.name + '</div>' +
         '<div class="card-desc">' + m.desc + '</div>' +
-        '<div class="card-traits">' + traits + '</div>' +
       '</div>' +
     '</div>';
   });
