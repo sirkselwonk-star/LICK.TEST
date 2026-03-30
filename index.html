@@ -1698,6 +1698,29 @@ function buildLickalotapus(c, targetScene) {
       var sm = (si % 2 === 0) ? blackM : whiteM;
       box("Stripe", 0.40, stripeH, 0.32, 0, sy + stripeH / 2, 0.08, sm);
     }
+
+    // Ball and chain on right ankle
+    var ironM = mat(0x3a3a3a);
+    var darkIronM = mat(0x2a2a2a);
+    // Ankle shackle
+    var shackle = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.012, 6, 8), ironM);
+    shackle.position.set(0.10, 0.01, 0.06);
+    shackle.rotation.x = Math.PI / 2;
+    shackle.castShadow = true;
+    group.add(shackle);
+    // Chain links
+    for (var ci = 0; ci < 5; ci++) {
+      var link = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.005, 4, 6), ironM);
+      link.position.set(0.10 + (ci + 1) * 0.045, -0.02, 0.06);
+      link.rotation.y = (ci % 2 === 0) ? 0 : Math.PI / 2;
+      link.castShadow = true;
+      group.add(link);
+    }
+    // Iron ball
+    var ball = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), darkIronM);
+    ball.position.set(0.38, -0.02, 0.06);
+    ball.castShadow = true;
+    group.add(ball);
   }
 
   // Crown (for gold variant)
