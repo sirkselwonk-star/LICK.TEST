@@ -2753,7 +2753,10 @@ function animateModel(t) {
         if (!particles[pi].visible) {
           var p = particles[pi];
           p.visible = true;
-          p.position.copy(tipWorldPos);
+          // Convert world position to model-local position
+          var localPos = tipWorldPos.clone();
+          modelGroup.worldToLocal(localPos);
+          p.position.copy(localPos);
           // Fling in the direction of motion + random spread
           p.userData.vel.x = (Math.random() - 0.5) * 0.04;
           p.userData.vel.y = -Math.random() * 0.02 - 0.005;
