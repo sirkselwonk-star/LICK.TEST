@@ -1012,13 +1012,54 @@
   }
   #tongue-tuner-toggle:hover { background: rgba(232,96,122,0.3); }
 
+  /* ── Mobile D-pad ── */
+  #mobile-dpad {
+    display: none;
+    position: absolute;
+    bottom: 60px; right: 14px;
+    width: 120px; height: 120px;
+    z-index: 14;
+    pointer-events: none;
+  }
+  #mobile-dpad.show { display: block; }
+  .dpad-btn {
+    position: absolute;
+    width: 38px; height: 38px;
+    background: rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    color: rgba(255,255,255,0.8);
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: all;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    cursor: pointer;
+  }
+  .dpad-btn:active { background: rgba(0,229,204,0.3); border-color: rgba(0,229,204,0.6); }
+  #dpad-up    { top: 0; left: 50%; transform: translateX(-50%); }
+  #dpad-down  { bottom: 0; left: 50%; transform: translateX(-50%); }
+  #dpad-left  { left: 0; top: 50%; transform: translateY(-50%); }
+  #dpad-right { right: 0; top: 50%; transform: translateY(-50%); }
+  .dpad-label {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255,255,255,0.15);
+    font-family: var(--vc-font);
+    font-size: 7px;
+    letter-spacing: 1px;
+    pointer-events: none;
+  }
+
   @media (max-width: 768px) {
     #shortcut-legend { display: none; }
     #style-panel { width: 260px; }
-    #control-cluster {
-      transform: scale(2);
-      transform-origin: bottom right;
-    }
+    #control-cluster { display: none !important; }
+    #btn-flip { bottom: 190px !important; }
     #grid-tr { display: none; }
   }
   @media (max-height: 500px) {
@@ -1149,6 +1190,15 @@
 
     <button id="reset-btn" onclick="resetTransform()">RESET</button>
     <button id="control-collapse-btn" onclick="toggleControlPanel()">▼ HIDE</button>
+  </div>
+
+  <!-- Mobile D-pad for X/Y position -->
+  <div id="mobile-dpad">
+    <div class="dpad-btn" id="dpad-up">&#9650;</div>
+    <div class="dpad-btn" id="dpad-down">&#9660;</div>
+    <div class="dpad-btn" id="dpad-left">&#9664;</div>
+    <div class="dpad-btn" id="dpad-right">&#9654;</div>
+    <div class="dpad-label">MOVE</div>
   </div>
 
   <div id="controls">
@@ -2185,6 +2235,7 @@ async function init() {
   animatePreviews();
 
   initPositionSliders();
+  initDpad();
   initTiltJoystick();
   initRotationDial();
   initScaleSlider();
@@ -2276,6 +2327,7 @@ function placeAt(pos) {
   placed = true;
   document.getElementById('crosshair').classList.add('placed');
   document.getElementById('control-cluster').classList.add('show');
+  document.getElementById('mobile-dpad').classList.add('show');
   var bc = document.getElementById('btn-clear'); if (bc) bc.style.display = '';
   document.getElementById('btn-shoot').style.display = '';
   setHint('');
@@ -2393,6 +2445,43 @@ function updatePositionSlidersFromModel() {
   var yT = document.getElementById('pos-y-thumb');
   if (xT) xT.style.left = Math.max(0, Math.min(100, xPct * 100)) + '%';
   if (yT) yT.style.top = Math.max(0, Math.min(100, yPct * 100)) + '%';
+}
+
+// ═══════════════════════════════════════════════════
+// MOBILE D-PAD
+// ═══════════════════════════════════════════════════
+var dpadInterval = null;
+var DPAD_STEP = 0.06;
+
+function initDpad() {
+  ['up', 'down', 'left', 'right'].forEach(function(dir) {
+    var btn = document.getElementById('dpad-' + dir);
+    function startMove(e) {
+      e.preventDefault(); e.stopPropagation();
+      if (dpadInterval) clearInterval(dpadInterval);
+      dpadMove(dir);
+      dpadInterval = setInterval(function() { dpadMove(dir); }, 50);
+    }
+    function stopMove(e) {
+      e.preventDefault();
+      if (dpadInterval) { clearInterval(dpadInterval); dpadInterval = null; }
+    }
+    btn.addEventListener('touchstart', startMove, { passive: false });
+    btn.addEventListener('mousedown', startMove);
+    btn.addEventListener('touchend', stopMove, { passive: false });
+    btn.addEventListener('touchcancel', stopMove, { passive: false });
+    btn.addEventListener('mouseup', stopMove);
+    btn.addEventListener('mouseleave', stopMove);
+  });
+}
+
+function dpadMove(dir) {
+  if (!modelGroup) return;
+  if (dir === 'up') modelGroup.position.y = Math.min(POS_Y_MAX, modelGroup.position.y + DPAD_STEP);
+  else if (dir === 'down') modelGroup.position.y = Math.max(POS_Y_MIN, modelGroup.position.y - DPAD_STEP);
+  else if (dir === 'left') modelGroup.position.x = Math.max(-POS_RANGE, modelGroup.position.x - DPAD_STEP);
+  else if (dir === 'right') modelGroup.position.x = Math.min(POS_RANGE, modelGroup.position.x + DPAD_STEP);
+  updatePositionSlidersFromModel();
 }
 
 // ═══════════════════════════════════════════════════
@@ -2868,7 +2957,7 @@ function takeScreenshot() {
   setTimeout(function() { flash.style.opacity = '0'; }, 120);
 
   // Hide UI elements
-  var hideEls = ['controls', 'crosshair', 'placed-badge', 'style-toggle', 'style-panel', 'shortcut-legend', 'control-cluster'];
+  var hideEls = ['controls', 'crosshair', 'placed-badge', 'style-toggle', 'style-panel', 'shortcut-legend', 'control-cluster', 'mobile-dpad'];
   hideEls.forEach(function(id) { var el = document.getElementById(id); if (el) el.style.visibility = 'hidden'; });
 
   var video = document.getElementById('camera-feed');
@@ -2995,6 +3084,7 @@ window.clearScene = function() {
   placed = false;
   document.getElementById('crosshair').classList.remove('placed');
   document.getElementById('control-cluster').classList.remove('show');
+  document.getElementById('mobile-dpad').classList.remove('show');
   var bc = document.getElementById('btn-clear'); if (bc) bc.style.display = 'none';
   document.getElementById('btn-shoot').style.display = 'none';
   setHint('TAP ANYWHERE TO PLACE LICKALOTAPUS');
@@ -3130,6 +3220,7 @@ window.undoClear = function() {
   placed = true;
   document.getElementById('crosshair').classList.add('placed');
   document.getElementById('control-cluster').classList.add('show');
+  document.getElementById('mobile-dpad').classList.add('show');
   var bc = document.getElementById('btn-clear'); if (bc) bc.style.display = '';
   document.getElementById('btn-shoot').style.display = '';
   setHint('RESTORED');
