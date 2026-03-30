@@ -417,52 +417,6 @@
   }
 
   /* Aspect dropdown */
-  #aspect-dropdown {
-    position: absolute;
-    top: 72px; left: 12px;
-    pointer-events: all;
-    z-index: 11;
-  }
-  #aspect-toggle {
-    background: rgba(80,50,140,0.5);
-    border: 1px solid rgba(140,100,220,0.6);
-    color: rgba(200,170,255,0.9);
-    font-family: 'Courier New', monospace; font-size: 8px;
-    letter-spacing: 1px; padding: 3px 10px; border-radius: 3px;
-    cursor: pointer; text-transform: uppercase;
-    transition: all 0.15s;
-  }
-  #aspect-toggle:hover { background: rgba(100,60,170,0.6); color: #D4AAFF; }
-  #aspect-menu {
-    display: none;
-    position: absolute; top: 100%; left: 50%;
-    transform: translateX(-50%);
-    margin-top: 4px;
-    background: rgba(10,10,15,0.9);
-    border: 1px solid rgba(180,130,255,0.3);
-    border-radius: 4px;
-    padding: 4px;
-    flex-direction: column; gap: 2px;
-    backdrop-filter: blur(6px);
-    left: 0;
-    transform: none;
-  }
-  #aspect-menu.open { display: flex; }
-  .aspect-btn {
-    background: rgba(80,50,140,0.4);
-    border: 1px solid rgba(140,100,220,0.5);
-    color: rgba(200,170,255,0.8);
-    font-family: 'Courier New', monospace; font-size: 8px;
-    letter-spacing: 1px; padding: 4px 14px; border-radius: 2px;
-    cursor: pointer; text-transform: uppercase; transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .aspect-btn:hover { background: rgba(100,60,170,0.5); color: #D4AAFF; }
-  .aspect-btn.active {
-    background: rgba(120,70,200,0.6);
-    border-color: #B482FF; color: #fff;
-  }
-
   .btn-row {
     display: flex;
     gap: 8px;
@@ -1020,7 +974,6 @@
     #control-cluster { bottom: 44px; }
   }
   @media (max-width: 400px) {
-    .aspect-btn { padding: 3px 6px; font-size: 8px; }
     .btn { padding: 5px 8px; font-size: 8px; }
   }
 </style>
@@ -1069,16 +1022,6 @@
     </div>
   </div>
   <div id="model-label">OG LICK</div>
-
-  <div id="aspect-dropdown">
-    <button id="aspect-toggle" onclick="toggleAspectMenu()">ASPECT: FREE</button>
-    <div id="aspect-menu">
-      <button class="aspect-btn active" onclick="setAspect('free',this)">FREE</button>
-      <button class="aspect-btn" onclick="setAspect('16:9',this)">16:9</button>
-      <button class="aspect-btn" onclick="setAspect('9:16',this)">9:16</button>
-      <button class="aspect-btn" onclick="setAspect('4:3',this)">4:3</button>
-    </div>
-  </div>
 
   <div id="crosshair">
     <div class="ch-corner tl"></div>
@@ -3055,59 +2998,15 @@ function setupDragDrop() {
 // RESIZE
 // ═══════════════════════════════════════════════════
 function getViewportRect() {
-  var winW = window.innerWidth, winH = window.innerHeight;
-  if (currentAspect === 'free') return { x: 0, y: 0, w: winW, h: winH };
-  var target = ASPECT_RATIOS[currentAspect];
-  var winRatio = winW / winH;
-  var w, h;
-  if (winRatio > target) { h = winH; w = Math.round(winH * target); }
-  else { w = winW; h = Math.round(winW / target); }
-  return { x: Math.round((winW - w) / 2), y: Math.round((winH - h) / 2), w: w, h: h };
+  return { x: 0, y: 0, w: window.innerWidth, h: window.innerHeight };
 }
 
 function onResize() {
   var r = getViewportRect();
-  // Apply letterbox to viewport elements
-  ['camera-feed', 'ar-canvas', 'tap-plane', 'ui'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.style.left = r.x + 'px';
-    el.style.top = r.y + 'px';
-    el.style.width = r.w + 'px';
-    el.style.height = r.h + 'px';
-    if (currentAspect !== 'free') {
-      el.style.right = 'auto';
-      el.style.bottom = 'auto';
-    } else {
-      el.style.left = ''; el.style.top = '';
-      el.style.width = ''; el.style.height = '';
-      el.style.right = ''; el.style.bottom = '';
-    }
-  });
   camera.aspect = r.w / r.h;
   camera.updateProjectionMatrix();
   renderer.setSize(r.w, r.h);
 }
-
-// ═══════════════════════════════════════════════════
-// ASPECT RATIO LETTERBOXING
-// ═══════════════════════════════════════════════════
-var currentAspect = 'free';
-var ASPECT_RATIOS = { '16:9': 16/9, '9:16': 9/16, '4:3': 4/3 };
-
-window.setAspect = function(ratio, btn) {
-  currentAspect = ratio;
-  document.querySelectorAll('.aspect-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  var toggle = document.getElementById('aspect-toggle');
-  if (toggle) toggle.textContent = 'ASPECT: ' + ratio.toUpperCase();
-  document.getElementById('aspect-menu').classList.remove('open');
-  onResize();
-};
-
-window.toggleAspectMenu = function() {
-  document.getElementById('aspect-menu').classList.toggle('open');
-};
 
 // ═══════════════════════════════════════════════════
 // UNDO CLEAR
