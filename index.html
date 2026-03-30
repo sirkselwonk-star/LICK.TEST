@@ -2868,7 +2868,7 @@ function takeScreenshot() {
   ctx.shadowBlur = 0;
 
   // Bottom gradient with hashtag
-  var hashSize = Math.round(subSize * 0.9);
+  var hashSize = Math.round(subSize * 1.1);
   var bottomH = hashSize + Math.round(30 * scale);
   var bGrad = ctx.createLinearGradient(0, out.height, 0, out.height - bottomH);
   bGrad.addColorStop(0, wt.barBg); bGrad.addColorStop(1, 'transparent');
