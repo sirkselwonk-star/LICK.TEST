@@ -1937,7 +1937,7 @@ window.selectModel = function(id) {
   camera.getWorldDirection(dir);
   dir.y = 0; dir.normalize();
   var pos = camera.position.clone().addScaledVector(dir, 3);
-  pos.y = 0;
+  pos.y = 1.0;
   placeAt(pos);
 };
 
@@ -2997,7 +2997,7 @@ function loadFile(file) {
     var dir = new THREE.Vector3();
     camera.getWorldDirection(dir); dir.y = 0; dir.normalize();
     var pos = camera.position.clone().addScaledVector(dir, 3);
-    pos.y = 0;
+    pos.y = 1.0;
     placeAt(pos);
     closeLightbox();
   };
