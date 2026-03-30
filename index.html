@@ -1150,6 +1150,7 @@
     <button class="btn" onclick="openLightbox()" id="btn-models" style="position:absolute;bottom:10px;left:14px">⟵ MODELS</button>
     <button class="btn" onclick="toggleStylePanel()" id="btn-style" style="position:absolute;bottom:10px;left:110px">🎨 STYLE</button>
     <button class="btn primary" onclick="takeScreenshot()" id="btn-shoot" style="display:none;position:absolute;bottom:10px;left:50%;transform:translateX(-50%)">👅 LICK</button>
+    <button class="btn" onclick="flipCamera()" id="btn-flip" style="position:absolute;bottom:10px;right:14px">🔄 FLIP</button>
   </div>
 </div>
 
@@ -2191,14 +2192,23 @@ async function init() {
 // ═══════════════════════════════════════════════════
 // CAMERA
 // ═══════════════════════════════════════════════════
-async function startCamera() {
+var currentFacing = 'environment';
+
+async function startCamera(facing) {
+  if (facing) currentFacing = facing;
   try {
+    // Stop any existing stream
+    var video = document.getElementById('camera-feed');
+    if (video.srcObject) {
+      video.srcObject.getTracks().forEach(function(t) { t.stop(); });
+    }
     var stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+      video: { facingMode: { ideal: currentFacing }, width: { ideal: 1920 }, height: { ideal: 1080 } },
       audio: false
     });
-    var video = document.getElementById('camera-feed');
     video.srcObject = stream;
+    // Mirror front camera
+    video.style.transform = currentFacing === 'user' ? 'scaleX(-1)' : '';
     await video.play();
   } catch (err) {
     showError(err.name === 'NotAllowedError'
@@ -2206,6 +2216,12 @@ async function startCamera() {
       : 'Could not access camera: ' + err.message);
   }
 }
+
+async function flipCamera() {
+  currentFacing = currentFacing === 'environment' ? 'user' : 'environment';
+  await startCamera(currentFacing);
+}
+window.flipCamera = flipCamera;
 
 function showError(msg) {
   document.getElementById('loading-screen').style.display = 'none';
@@ -2847,7 +2863,15 @@ function takeScreenshot() {
   var sx, sy, sw, sh;
   if (vidAspect > outAspect) { sh = vidH; sw = Math.round(vidH * outAspect); sx = Math.round((vidW - sw) / 2); sy = 0; }
   else { sw = vidW; sh = Math.round(vidW / outAspect); sx = 0; sy = Math.round((vidH - sh) / 2); }
-  ctx.drawImage(video, sx, sy, sw, sh, 0, 0, out.width, out.height);
+  // Mirror video in screenshot when using front camera
+  if (currentFacing === 'user') {
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, sx, sy, sw, sh, -out.width, 0, out.width, out.height);
+    ctx.restore();
+  } else {
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, out.width, out.height);
+  }
 
   // Draw 3D overlay
   renderer.render(scene, camera);
