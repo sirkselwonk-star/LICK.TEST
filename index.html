@@ -254,30 +254,6 @@
     white-space: nowrap;
   }
 
-  /* Select button */
-  .card-select-btn {
-    display: block;
-    width: 100%;
-    margin-top: 12px;
-    padding: 8px;
-    background: rgba(255,107,26,0.1);
-    border: 1px solid rgba(255,107,26,0.3);
-    color: #FF6B1A;
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    font-weight: bold;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: background 0.15s, border-color 0.15s;
-  }
-
-  .card-select-btn:hover {
-    background: #FF6B1A;
-    border-color: #FF6B1A;
-    color: #000;
-  }
 
   /* ── Upload Card ── */
   .upload-card .card-preview {
@@ -303,17 +279,6 @@
     box-shadow: 0 8px 32px rgba(0,229,204,0.22);
   }
 
-  .upload-card .card-select-btn {
-    background: rgba(0,229,204,0.1);
-    border-color: rgba(0,229,204,0.3);
-    color: #00E5CC;
-  }
-
-  .upload-card .card-select-btn:hover {
-    background: #00E5CC;
-    border-color: #00E5CC;
-    color: #000;
-  }
 
   .drag-over .card-preview {
     background: radial-gradient(ellipse at center, #0a2a1c 0%, #0a0a0a 70%);
@@ -1858,7 +1823,7 @@ function renderLightboxCards() {
 
   MODELS.forEach(function(m) {
     var traits = m.traits.map(function(t) { return '<span class="trait-pill">' + t + '</span>'; }).join('');
-    html += '<div class="model-card" id="card-' + m.id + '">' +
+    html += '<div class="model-card" id="card-' + m.id + '" onclick="selectModel(\'' + m.id + '\')">' +
       '<div class="card-preview"><canvas></canvas>' +
         '<div class="card-tag-wrap"><div class="card-tag"><span>' + m.tag + '</span></div></div>' +
       '</div>' +
@@ -1866,13 +1831,12 @@ function renderLightboxCards() {
         '<div class="card-name">' + m.name + '</div>' +
         '<div class="card-desc">' + m.desc + '</div>' +
         '<div class="card-traits">' + traits + '</div>' +
-        '<button class="card-select-btn" onclick="selectModel(\'' + m.id + '\')">SELECT &amp; PLACE</button>' +
       '</div>' +
     '</div>';
   });
 
   // Upload card
-  html += '<div class="model-card upload-card" id="card-custom">' +
+  html += '<div class="model-card upload-card" id="card-custom" onclick="triggerFileUpload()">' +
     '<div class="card-preview" id="upload-drop-zone">' +
       '<div class="upload-icon">📦</div>' +
       '<div class="upload-text">Drop GLB Here</div>' +
@@ -1881,7 +1845,6 @@ function renderLightboxCards() {
       '<div class="card-name" style="color:#00E5CC">Upload Your Own</div>' +
       '<div class="card-desc">Have a custom Lickalotapus GLB model? Load it up and place it in the wild.</div>' +
       '<div class="card-traits"><span class="trait-pill" style="color:#00E5CC;border-color:#003b33">CUSTOM GLB</span></div>' +
-      '<button class="card-select-btn" onclick="triggerFileUpload()">CHOOSE FILE</button>' +
     '</div>' +
   '</div>';
 
