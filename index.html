@@ -426,11 +426,12 @@
   }
 
   .btn, .btn.primary, .btn.danger {
-    background: rgba(0,0,0,0.5);
-    border: 1.5px solid rgba(255,255,255,0.3);
-    color: #fff;
+    background: #FF6B1A;
+    border: 1.5px solid #FF8844;
+    color: #000;
     font-family: 'Press Start 2P', 'Courier New', monospace;
     font-size: 14px;
+    font-weight: bold;
     letter-spacing: 1px;
     padding: 10px 16px;
     border-radius: 6px;
@@ -438,11 +439,9 @@
     text-transform: uppercase;
     transition: background 0.15s, border-color 0.15s;
     -webkit-tap-highlight-color: transparent;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
   }
-  .btn:hover, .btn.primary:hover, .btn.danger:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.5); }
-  .btn:active, .btn.primary:active, .btn.danger:active { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); }
+  .btn:hover, .btn.primary:hover, .btn.danger:hover { background: #FF8844; border-color: #FFa060; }
+  .btn:active, .btn.primary:active, .btn.danger:active { background: #FFD600; border-color: #FFD600; }
 
   /* Transform controls */
   /* ---- VISUAL CONTROLS: Compact unified cluster ---- */
@@ -911,22 +910,21 @@
   .dpad-btn {
     position: absolute;
     width: 44px; height: 44px;
-    background: rgba(0,0,0,0.5);
-    border: 1.5px solid rgba(255,255,255,0.3);
+    background: #FF6B1A;
+    border: 1.5px solid #FF8844;
     border-radius: 6px;
-    color: #fff;
+    color: #000;
     font-family: 'Press Start 2P', 'Courier New', monospace;
     font-size: 14px;
+    font-weight: bold;
     display: flex; align-items: center; justify-content: center;
     pointer-events: all;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
     cursor: pointer;
   }
-  .dpad-btn:active { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); }
+  .dpad-btn:active { background: #FFD600; border-color: #FFD600; }
   #dpad-up    { top: 0; left: 50%; transform: translateX(-50%); }
   #dpad-down  { bottom: 0; left: 50%; transform: translateX(-50%); }
   #dpad-left  { left: 0; top: 50%; transform: translateY(-50%); }
