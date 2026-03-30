@@ -2884,10 +2884,22 @@ function takeScreenshot() {
   // Restore UI
   hideEls.forEach(function(id) { var el = document.getElementById(id); if (el) el.style.visibility = ''; });
 
-  var link = document.createElement('a');
-  link.download = 'lickalotapus-in-the-wild.png';
-  link.href = out.toDataURL('image/png');
-  link.click();
+  out.toBlob(function(blob) {
+    var file = new File([blob], 'lickalotapus-in-the-wild.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({
+        files: [file],
+        title: 'Lickalotapus In The Wild',
+        text: '#LickalotapusInTheWild'
+      }).catch(function() {});
+    } else {
+      var link = document.createElement('a');
+      link.download = file.name;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+  }, 'image/png');
 
   setHint('SAVED! POST WITH #LickalotapusInTheWild');
   setTimeout(function() { setHint(placed ? '' : 'TAP ANYWHERE TO PLACE LICKALOTAPUS'); }, 8000);
