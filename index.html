@@ -1687,12 +1687,17 @@ function buildLickalotapus(c, targetScene) {
     }
   });
 
-  // Prison stripes
+  // Prison stripes — alternating black & white horizontal bands
   if (c.stripes) {
-    var stripeM = mat(c.stripes);
-    [0.18, 0.28, 0.38].forEach(function(sy) {
-      box("Stripe", 0.40, 0.03, 0.32, 0, sy, 0.08, stripeM);
-    });
+    var whiteM = mat(0xf0f0f0);
+    var blackM = mat(0x111111);
+    var stripeH = 0.042;
+    var bodyBottom = 0.09;
+    for (var si = 0; si < 10; si++) {
+      var sy = bodyBottom + si * stripeH;
+      var sm = (si % 2 === 0) ? blackM : whiteM;
+      box("Stripe", 0.40, stripeH, 0.32, 0, sy + stripeH / 2, 0.08, sm);
+    }
   }
 
   // Crown (for gold variant)
