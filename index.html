@@ -3041,18 +3041,111 @@ window.toggleStylePanel = function() {
 
   var heroModel = buildLickalotapus(MODELS[0].colors, heroScene);
   var heroClock = new THREE.Clock();
+  var heroLastT = 0;
+
+  // Local blink state for hero
+  var hBlinkTimer = 0, hBlinkState = 0, hBlinkDur = 0.12;
+  var hBlinkSide = 'both', hNextBlink = 1.5 + Math.random() * 2;
+  var hLidL = 0, hLidR = 0;
+
+  // Local ear flick state for hero
+  var hEarTimer = 0, hEarFlicking = false, hEarSide = 1;
+  var hEarAmt = 0, hNextEar = 2 + Math.random() * 3;
 
   function animateHero() {
     if (!document.getElementById('contest-screen') ||
         document.getElementById('contest-screen').style.display === 'none') return;
     requestAnimationFrame(animateHero);
     var t = heroClock.getElapsedTime();
+    var dt = t - heroLastT;
+    heroLastT = t;
+    var tp = tongueParams;
+
+    // Slow turntable rotation
     heroModel.rotation.y = Math.sin(t * 0.8) * 0.5;
+
+    // Blink
+    hBlinkTimer += dt;
+    if (hBlinkState === 0 && hBlinkTimer > hNextBlink) {
+      hBlinkState = 1; hBlinkTimer = 0;
+      hBlinkSide = Math.random() < 0.2 ? (Math.random() < 0.5 ? 'L' : 'R') : 'both';
+    }
+    if (hBlinkState === 1) {
+      var p1 = Math.min(1, hBlinkTimer / hBlinkDur);
+      if (hBlinkSide !== 'R') hLidL = p1;
+      if (hBlinkSide !== 'L') hLidR = p1;
+      if (p1 >= 1) { hBlinkState = 2; hBlinkTimer = 0; }
+    } else if (hBlinkState === 2) {
+      if (hBlinkTimer > 0.05) { hBlinkState = 3; hBlinkTimer = 0; }
+    } else if (hBlinkState === 3) {
+      var p3 = Math.min(1, hBlinkTimer / hBlinkDur);
+      if (hBlinkSide !== 'R') hLidL = 1 - p3;
+      if (hBlinkSide !== 'L') hLidR = 1 - p3;
+      if (p3 >= 1) { hBlinkState = 0; hBlinkTimer = 0; hLidL = 0; hLidR = 0; hNextBlink = 1.5 + Math.random() * 2; }
+    }
+
+    // Ear flick
+    hEarTimer += dt;
+    if (!hEarFlicking && hEarTimer > hNextEar) {
+      hEarFlicking = true; hEarTimer = 0; hEarSide = Math.random() < 0.5 ? -1 : 1;
+    }
+    if (hEarFlicking) {
+      hEarAmt = Math.sin(hEarTimer * 25) * Math.max(0, 1 - hEarTimer * 4) * 0.3;
+      if (hEarTimer > 0.3) { hEarFlicking = false; hEarAmt = 0; hEarTimer = 0; hNextEar = 2 + Math.random() * 3; }
+    }
+
+    var extendCycle = (Math.sin(t * tp.extendSpd) + 1) * 0.5;
+    var lickPhase = Math.sin(t * tp.extendSpd);
+
     heroModel.children.forEach(function(child) {
       if (child.userData.isTongue) {
         animateTongueChain(child, t);
+        return;
+      }
+      if (child.userData.isFace) {
+        child.position.y = child.userData.baseY - lickPhase * 0.008;
+      }
+      if (child.userData.isHead) {
+        child.position.y = child.userData.baseY - lickPhase * 0.004;
+        child.rotation.x = -lickPhase * 0.02;
+        child.rotation.z = Math.sin(t * tp.extendSpd * 0.5) * 0.01;
+        if (child.userData.isEar) {
+          var earFlick = (child.userData.earSide === hEarSide) ? hEarAmt : 0;
+          child.rotation.z += earFlick * child.userData.earSide;
+        }
+      }
+      if (child.userData.isArm && child.userData.baseRZ !== undefined) {
+        var side = child.userData.armSide;
+        var hugCycle = Math.sin(t * 1.2) * 0.18;
+        var reach = Math.sin(t * 1.8 + side * 0.5) * 0.15;
+        var lickLift = lickPhase * 0.06 * side;
+        child.rotation.z = child.userData.baseRZ - hugCycle * side + lickLift;
+        child.rotation.x = child.userData.baseRX + reach;
+        child.rotation.y = child.userData.baseRY;
+        child.children.forEach(function(ch) {
+          if (!ch.userData.isFingerSeg) return;
+          var grabPhase = (Math.sin(t * 2.5 + side * 1.0) + 1) * 0.5;
+          ch.rotation.x = grabPhase * 0.8;
+          ch.children.forEach(function(inner) {
+            if (inner.userData.isFingerSeg) inner.rotation.x = grabPhase * 1.0;
+          });
+        });
+      }
+      if (child.userData.isEyelid) {
+        var lidAmt = child.userData.eyeSide === 'L' ? hLidL : hLidR;
+        child.visible = true;
+        child.scale.y = 0.15 + lidAmt * 0.85;
       }
     });
+
+    // Drip strands
+    heroModel.traverse(function(obj) {
+      if (obj.userData.isDripStrand) {
+        var cycle = ((t * obj.userData.dripSpeed + obj.userData.dripPhase) % (Math.PI * 2)) / (Math.PI * 2);
+        obj.scale.y = cycle < 0.8 ? 0.5 + cycle * 0.75 : 0.5;
+      }
+    });
+
     heroRenderer.render(heroScene, heroCam);
   }
   animateHero();
