@@ -254,72 +254,7 @@
     white-space: nowrap;
   }
 
-  /* Select button */
-  .card-select-btn {
-    display: block;
-    width: 100%;
-    margin-top: 12px;
-    padding: 8px;
-    background: rgba(255,107,26,0.1);
-    border: 1px solid rgba(255,107,26,0.3);
-    color: #FF6B1A;
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    font-weight: bold;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: background 0.15s, border-color 0.15s;
-  }
 
-  .card-select-btn:hover {
-    background: #FF6B1A;
-    border-color: #FF6B1A;
-    color: #000;
-  }
-
-  /* ── Upload Card ── */
-  .upload-card .card-preview {
-    background: radial-gradient(ellipse at center, #0a1a0c 0%, #0a0a0a 70%);
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .upload-icon { font-size: 48px; opacity: 0.6; }
-  .upload-text {
-    font-size: 0.7rem;
-    color: #00E5CC;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    opacity: 0.7;
-  }
-
-  .upload-card:hover .upload-icon { opacity: 1; }
-  .upload-card:hover .upload-text { opacity: 1; }
-
-  .upload-card:hover {
-    border-color: #00E5CC;
-    box-shadow: 0 8px 32px rgba(0,229,204,0.22);
-  }
-
-  .upload-card .card-select-btn {
-    background: rgba(0,229,204,0.1);
-    border-color: rgba(0,229,204,0.3);
-    color: #00E5CC;
-  }
-
-  .upload-card .card-select-btn:hover {
-    background: #00E5CC;
-    border-color: #00E5CC;
-    color: #000;
-  }
-
-  .drag-over .card-preview {
-    background: radial-gradient(ellipse at center, #0a2a1c 0%, #0a0a0a 70%);
-  }
-
-  #glb-file-input { display: none; }
 
   /* ══════════════════════════════════════
      MAIN AR UI (shown after selection)
@@ -354,12 +289,15 @@
 
   #model-label {
     position: absolute;
-    bottom: 32px; left: 14px;
-    font-size: 9px;
+    bottom: 68px; right: 14px;
+    width: 120px;
+    font-size: 13px;
+    font-weight: bold;
     letter-spacing: 2px;
     color: #FFD600;
-    text-align: left;
+    text-align: center;
     line-height: 1.3;
+    text-shadow: 0 0 8px rgba(255,214,0,0.7), 0 1px 3px rgba(0,0,0,0.8);
     pointer-events: none;
   }
 
@@ -977,8 +915,6 @@
       <div class="sub">In The Wild</div>
     </div>
   </div>
-  <div id="model-label">OG LICK</div>
-
   <div id="crosshair">
     <div class="ch-corner tl"></div>
     <div class="ch-corner tr"></div>
@@ -1051,6 +987,7 @@
     <div class="dpad-btn" id="dpad-right">&#9654;</div>
     <div class="dpad-label">MOVE</div>
   </div>
+  <div id="model-label">OG LICK</div>
 
   <div id="controls">
     <div id="btn-group-right" style="position:absolute;bottom:10px;right:14px;display:flex;flex-direction:column;gap:8px;align-items:flex-start">
@@ -1085,9 +1022,6 @@
 
 <!-- ══════ FLASH ══════ -->
 <div id="flash"></div>
-
-<!-- ══════ GLB FILE INPUT ══════ -->
-<input type="file" id="glb-file-input" accept=".glb,.gltf">
 
 <!-- ══════ THREE.JS ══════ -->
 <script type="importmap">
@@ -1151,7 +1085,6 @@ const MODELS = [
 let scene, camera, renderer, clock;
 let modelGroup = null;
 let selectedModel = null;
-let customGLBBlob = null;
 let placed = false;
 let transformMode = 'move';
 let lastTouch = null;
@@ -1159,8 +1092,6 @@ let pinchDist0 = null;
 let modelScale0 = 1;
 let modelRotY0 = 0;
 let previewScenes = [];
-
-var _GLTFLoader = null;
 
 // ═══════════════════════════════════════════════════
 // BUILD LICKALOTAPUS PLACEHOLDER (per variant)
@@ -1170,7 +1101,7 @@ function buildLickalotapus(c, targetScene) {
   function mat(color) { return new THREE.MeshLambertMaterial({ color: color }); }
   function box(name, sx, sy, sz, px, py, pz, m) {
     var mesh = new THREE.Mesh(new THREE.BoxGeometry(sx, sy, sz), m || bodyM);
-    mesh.position.set(px, py, pz); mesh.castShadow = true;
+    mesh.position.set(px, py, pz);
     group.add(mesh); return mesh;
   }
   function sphere(name, r, px, py, pz, m) {
@@ -1663,7 +1594,7 @@ function buildLickalotapus(c, targetScene) {
 
     // Upper arm
     var ua = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.14, 0.08), bodyM);
-    ua.position.y = -0.07; ua.castShadow = true;
+    ua.position.y = -0.07;
     armGroup.add(ua);
 
     // Palm
@@ -1722,7 +1653,6 @@ function buildLickalotapus(c, targetScene) {
 
   var tailMain = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.28, 0.04), tailM);
   tailMain.position.y = -0.14; // hang from pivot
-  tailMain.castShadow = true;
   tailGroup.add(tailMain);
 
   // Waffle grid on both faces
@@ -1756,12 +1686,37 @@ function buildLickalotapus(c, targetScene) {
     }
   });
 
-  // Prison stripes
+  // Prison stripes — alternating black & white horizontal bands
   if (c.stripes) {
-    var stripeM = mat(c.stripes);
-    [0.18, 0.28, 0.38].forEach(function(sy) {
-      box("Stripe", 0.40, 0.03, 0.32, 0, sy, 0.08, stripeM);
-    });
+    var whiteM = mat(0xf0f0f0);
+    var blackM = mat(0x111111);
+    var stripeH = 0.042;
+    var bodyBottom = 0.09;
+    for (var si = 0; si < 10; si++) {
+      var sy = bodyBottom + si * stripeH;
+      var sm = (si % 2 === 0) ? blackM : whiteM;
+      box("Stripe", 0.40, stripeH, 0.32, 0, sy + stripeH / 2, 0.08, sm);
+    }
+
+    // Ball and chain on right ankle
+    var ironM = mat(0x3a3a3a);
+    var darkIronM = mat(0x2a2a2a);
+    // Ankle shackle
+    var shackle = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.012, 6, 8), ironM);
+    shackle.position.set(0.10, 0.01, 0.06);
+    shackle.rotation.x = Math.PI / 2;
+    group.add(shackle);
+    // Chain links
+    for (var ci = 0; ci < 5; ci++) {
+      var link = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.005, 4, 6), ironM);
+      link.position.set(0.10 + (ci + 1) * 0.045, -0.02, 0.06);
+      link.rotation.y = (ci % 2 === 0) ? 0 : Math.PI / 2;
+      group.add(link);
+    }
+    // Iron ball
+    var ball = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), darkIronM);
+    ball.position.set(0.38, -0.02, 0.06);
+    group.add(ball);
   }
 
   // Crown (for gold variant)
@@ -1856,7 +1811,7 @@ function renderLightboxCards() {
 
   MODELS.forEach(function(m) {
     var traits = m.traits.map(function(t) { return '<span class="trait-pill">' + t + '</span>'; }).join('');
-    html += '<div class="model-card" id="card-' + m.id + '">' +
+    html += '<div class="model-card" id="card-' + m.id + '" onclick="selectModel(\'' + m.id + '\')">' +
       '<div class="card-preview"><canvas></canvas>' +
         '<div class="card-tag-wrap"><div class="card-tag"><span>' + m.tag + '</span></div></div>' +
       '</div>' +
@@ -1864,24 +1819,10 @@ function renderLightboxCards() {
         '<div class="card-name">' + m.name + '</div>' +
         '<div class="card-desc">' + m.desc + '</div>' +
         '<div class="card-traits">' + traits + '</div>' +
-        '<button class="card-select-btn" onclick="selectModel(\'' + m.id + '\')">SELECT &amp; PLACE</button>' +
       '</div>' +
     '</div>';
   });
 
-  // Upload card
-  html += '<div class="model-card upload-card" id="card-custom">' +
-    '<div class="card-preview" id="upload-drop-zone">' +
-      '<div class="upload-icon">📦</div>' +
-      '<div class="upload-text">Drop GLB Here</div>' +
-    '</div>' +
-    '<div class="card-info">' +
-      '<div class="card-name" style="color:#00E5CC">Upload Your Own</div>' +
-      '<div class="card-desc">Have a custom Lickalotapus GLB model? Load it up and place it in the wild.</div>' +
-      '<div class="card-traits"><span class="trait-pill" style="color:#00E5CC;border-color:#003b33">CUSTOM GLB</span></div>' +
-      '<button class="card-select-btn" onclick="triggerFileUpload()">CHOOSE FILE</button>' +
-    '</div>' +
-  '</div>';
 
   grid.innerHTML = html;
 }
@@ -1905,7 +1846,6 @@ window.selectModel = function(id) {
   var m = MODELS.find(function(x) { return x.id === id; });
   if (!m) return;
   selectedModel = m;
-  customGLBBlob = null;
   document.getElementById('model-label').innerHTML = m.name.toUpperCase();
   closeLightbox();
   // Auto-place the model in view
@@ -1916,79 +1856,6 @@ window.selectModel = function(id) {
   pos.y = 1.0;
   placeAt(pos);
 };
-
-window.triggerFileUpload = function() {
-  document.getElementById('glb-file-input').click();
-};
-// ═══════════════════════════════════════════════════
-// GLB LOADING
-// ═══════════════════════════════════════════════════
-async function ensureGLTFLoader() {
-  if (_GLTFLoader) return;
-  var module = await import('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js');
-  _GLTFLoader = module.GLTFLoader;
-}
-
-async function loadGLBFromBlob(blob) {
-  await ensureGLTFLoader();
-  var url = URL.createObjectURL(blob);
-  return new Promise(function(resolve, reject) {
-    if (!_GLTFLoader) { reject(new Error('GLTFLoader not available')); return; }
-    var loader = new _GLTFLoader();
-    loader.load(url, function(gltf) {
-      URL.revokeObjectURL(url);
-      resolve(gltf);
-    }, undefined, function(err) {
-      URL.revokeObjectURL(url);
-      reject(err);
-    });
-  });
-}
-
-async function spawnGLBModel(blob, position) {
-  if (modelGroup) { scene.remove(modelGroup); modelGroup = null; }
-  var gltf;
-  try { gltf = await loadGLBFromBlob(blob); } catch(e) {
-    console.error('GLB load error:', e);
-    return;
-  }
-  var model = gltf.scene;
-
-  // Debug: log what we got
-  console.log('GLB loaded, children:', model.children.length);
-  var box = new THREE.Box3().setFromObject(model);
-  var size = box.getSize(new THREE.Vector3());
-  console.log('Model size:', size.x, size.y, size.z);
-
-  // Auto-scale to ~1m tall
-  var maxDim = Math.max(size.x, size.y, size.z);
-  if (maxDim > 0.001) {
-    var targetSize = 1.0;
-    model.scale.setScalar(targetSize / maxDim);
-  }
-
-  // Sit on ground plane
-  var box2 = new THREE.Box3().setFromObject(model);
-  model.position.y -= box2.min.y;
-
-  // Enable shadows and ensure materials are visible
-  model.traverse(function(child) {
-    if (child.isMesh) {
-      child.castShadow = true;
-      child.receiveShadow = true;
-      // Ensure material is double-sided for Blender exports
-      if (child.material) {
-        child.material.side = THREE.DoubleSide;
-      }
-    }
-  });
-
-  modelGroup = new THREE.Group();
-  modelGroup.add(model);
-  modelGroup.position.copy(position);
-  scene.add(modelGroup);
-  console.log('Model placed at:', position.x, position.y, position.z);
-}
 
 // ═══════════════════════════════════════════════════
 // MAIN THREE.JS SCENE
@@ -2004,25 +1871,17 @@ async function init() {
   renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.shadowMap.enabled = true;
   renderer.outputEncoding = THREE.sRGBEncoding;
 
   var ambient = new THREE.AmbientLight(0xffffff, 0.7);
   scene.add(ambient);
   var sun = new THREE.DirectionalLight(0xfff5e0, 1.2);
-  sun.position.set(3, 8, 5); sun.castShadow = true;
+  sun.position.set(3, 8, 5);
   scene.add(sun);
   var fill = new THREE.DirectionalLight(0xc0e8ff, 0.4);
   fill.position.set(-4, 2, -3);
   scene.add(fill);
 
-  var shadowGeo = new THREE.PlaneGeometry(20, 20);
-  var shadowMat = new THREE.ShadowMaterial({ opacity: 0.25 });
-  var shadowPlane = new THREE.Mesh(shadowGeo, shadowMat);
-  shadowPlane.rotation.x = -Math.PI / 2;
-  shadowPlane.position.y = 0;
-  shadowPlane.receiveShadow = true;
-  scene.add(shadowPlane);
 
   await startCamera();
 
@@ -2034,8 +1893,6 @@ async function init() {
   document.getElementById('tap-plane').addEventListener('mousedown', onMouseDragStart);
   window.addEventListener('mousemove', onMouseDragMove);
   window.addEventListener('mouseup', onMouseDragEnd);
-  document.getElementById('glb-file-input').addEventListener('change', onFileSelected);
-  setupDragDrop();
 
   animate();
 
@@ -2123,9 +1980,7 @@ function onTap(e) {
 }
 
 function placeAt(pos) {
-  if (customGLBBlob) {
-    spawnGLBModel(customGLBBlob, pos);
-  } else if (selectedModel) {
+  if (selectedModel) {
     if (modelGroup) { scene.remove(modelGroup); modelGroup = null; }
     modelGroup = buildLickalotapus(selectedModel.colors, null);
     modelGroup.position.copy(pos);
@@ -2949,46 +2804,6 @@ window.takeScreenshot = takeScreenshot;
 function setHint(msg) {
   var el = document.getElementById('hint');
   if (el) el.textContent = msg;
-}
-
-// ═══════════════════════════════════════════════════
-// FILE LOADING & DRAG DROP
-// ═══════════════════════════════════════════════════
-function onFileSelected(e) {
-  var file = e.target.files[0];
-  if (!file) return;
-  loadFile(file);
-  e.target.value = '';
-}
-
-function loadFile(file) {
-  if (!file.name.match(/\.(glb|gltf)$/i)) {
-    setHint('Please select a .glb or .gltf file');
-    return;
-  }
-  var reader = new FileReader();
-  reader.onload = function(ev) {
-    customGLBBlob = new Blob([ev.target.result], { type: 'model/gltf-binary' });
-    selectedModel = null;
-    document.getElementById('model-label').innerHTML = 'CUSTOM GLB';
-    closeLightbox();
-    var dir = new THREE.Vector3();
-    camera.getWorldDirection(dir); dir.y = 0; dir.normalize();
-    var pos = camera.position.clone().addScaledVector(dir, 3);
-    pos.y = 1.0;
-    placeAt(pos);
-    closeLightbox();
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-function setupDragDrop() {
-  document.addEventListener('dragover', function(e) { e.preventDefault(); });
-  document.addEventListener('drop', function(e) {
-    e.preventDefault();
-    var file = e.dataTransfer.files[0];
-    if (file) loadFile(file);
-  });
 }
 
 // ═══════════════════════════════════════════════════
