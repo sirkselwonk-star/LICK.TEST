@@ -806,26 +806,6 @@
   }
 
   /* ── Undo bar ── */
-  #undo-bar {
-    position: fixed; bottom: 20px; left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: rgba(0,0,0,0.85);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 6px; padding: 8px 18px;
-    display: flex; gap: 14px; align-items: center;
-    z-index: 30; transition: transform 0.3s ease;
-    pointer-events: all;
-  }
-  #undo-bar.show { transform: translateX(-50%) translateY(0); }
-  #undo-bar p { font-family: 'Courier New', monospace; font-size: 12px; color: rgba(255,255,255,0.6); letter-spacing: 2px; }
-  #undo-bar button {
-    background: #FF6B1A; border: none; color: #000;
-    font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold;
-    letter-spacing: 2px; padding: 5px 12px; border-radius: 3px;
-    cursor: pointer; text-transform: uppercase;
-  }
-  #undo-bar button:hover { background: #FFD600; }
-
   /* ── Style Studio panel ── */
   #style-toggle {
     position: fixed; top: 50%; right: 0;
@@ -1086,10 +1066,6 @@
 
 
 <!-- ══════ UNDO BAR ══════ -->
-<div id="undo-bar">
-  <p>Scene cleared</p>
-  <button onclick="undoClear()">UNDO</button>
-</div>
 
 <!-- ══════ STYLE STUDIO ══════ -->
 <div id="style-panel">
@@ -2941,12 +2917,6 @@ window.resetTransform = function() {
 
 window.clearScene = function() {
   if (modelGroup) {
-    undoState = {
-      group: modelGroup,
-      position: modelGroup.position.clone(),
-      rotation: modelGroup.rotation.clone(),
-      scale: modelGroup.scale.clone()
-    };
     scene.remove(modelGroup);
     modelGroup = null;
   }
@@ -2957,13 +2927,6 @@ window.clearScene = function() {
   var bc = document.getElementById('btn-clear'); if (bc) bc.style.display = 'none';
   document.getElementById('btn-shoot').style.display = 'none';
   setHint('TAP ANYWHERE TO PLACE LICKALOTAPUS');
-  // Show undo bar
-  var bar = document.getElementById('undo-bar');
-  if (bar) {
-    bar.classList.add('show');
-    clearTimeout(undoTimer);
-    undoTimer = setTimeout(function() { bar.classList.remove('show'); undoState = null; }, 5000);
-  }
 };
 
 window.takeScreenshot = takeScreenshot;
@@ -3030,29 +2993,6 @@ function onResize() {
 // ═══════════════════════════════════════════════════
 // UNDO CLEAR
 // ═══════════════════════════════════════════════════
-var undoState = null, undoTimer = null;
-
-window.undoClear = function() {
-  if (!undoState) return;
-  var bar = document.getElementById('undo-bar');
-  bar.classList.remove('show');
-  clearTimeout(undoTimer);
-  modelGroup = undoState.group;
-  modelGroup.position.copy(undoState.position);
-  modelGroup.rotation.copy(undoState.rotation);
-  modelGroup.scale.copy(undoState.scale);
-  scene.add(modelGroup);
-  placed = true;
-  document.getElementById('crosshair').classList.add('placed');
-  document.getElementById('control-cluster').classList.add('show');
-  document.getElementById('mobile-dpad').classList.add('show');
-  var bc = document.getElementById('btn-clear'); if (bc) bc.style.display = '';
-  document.getElementById('btn-shoot').style.display = '';
-  setHint('RESTORED');
-  updateScaleSliderFromModel();
-  updatePositionSlidersFromModel();
-  undoState = null;
-};
 
 // ═══════════════════════════════════════════════════
 // WATERMARK THEMES
