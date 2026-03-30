@@ -1789,24 +1789,50 @@ function buildLickalotapus(c, targetScene) {
     }
 
     // Ball and chain on right ankle
-    var ironM = mat(0x3a3a3a);
-    var darkIronM = mat(0x2a2a2a);
-    // Ankle shackle
-    var shackle = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.012, 6, 8), ironM);
-    shackle.position.set(0.10, 0.01, 0.06);
+    var ironM = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.4, metalness: 0.8 });
+    var darkIronM = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: 0.3, metalness: 0.9 });
+
+    // Ankle shackle — thick band
+    var shackle = new THREE.Mesh(new THREE.TorusGeometry(0.05, 0.015, 8, 12), ironM);
+    shackle.position.set(0.10, 0.02, 0.06);
     shackle.rotation.x = Math.PI / 2;
     group.add(shackle);
-    // Chain links
-    for (var ci = 0; ci < 5; ci++) {
-      var link = new THREE.Mesh(new THREE.TorusGeometry(0.015, 0.005, 4, 6), ironM);
-      link.position.set(0.10 + (ci + 1) * 0.045, -0.02, 0.06);
+    // Shackle rivets
+    [-1, 1].forEach(function(s) {
+      var rivet = new THREE.Mesh(new THREE.SphereGeometry(0.008, 4, 4), darkIronM);
+      rivet.position.set(0.10 + s * 0.04, 0.02, 0.06);
+      group.add(rivet);
+    });
+
+    // Chain — alternating link orientations with slight droop
+    var chainLen = 7;
+    for (var ci = 0; ci < chainLen; ci++) {
+      var frac = (ci + 1) / (chainLen + 1);
+      var cx = 0.10 + frac * 0.32;
+      var sag = Math.sin(frac * Math.PI) * -0.04;
+      var cy = -0.01 + sag;
+      var link = new THREE.Mesh(new THREE.TorusGeometry(0.018, 0.006, 6, 8), ironM);
+      link.position.set(cx, cy, 0.06);
       link.rotation.y = (ci % 2 === 0) ? 0 : Math.PI / 2;
+      link.rotation.z = (ci % 2 === 0) ? 0.15 : -0.15;
       group.add(link);
     }
-    // Iron ball
-    var ball = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), darkIronM);
-    ball.position.set(0.38, -0.02, 0.06);
+
+    // Iron ball — larger with ring attachment
+    var ball = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), darkIronM);
+    ball.position.set(0.44, -0.04, 0.06);
     group.add(ball);
+    // Ring on top of ball
+    var ballRing = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.006, 6, 8), ironM);
+    ballRing.position.set(0.44, 0.04, 0.06);
+    ballRing.rotation.x = Math.PI / 2;
+    group.add(ballRing);
+    // Highlight sheen on ball
+    var sheen = new THREE.Mesh(new THREE.SphereGeometry(0.091, 10, 8), new THREE.MeshStandardMaterial({
+      color: 0x666666, roughness: 0.2, metalness: 1.0, transparent: true, opacity: 0.15
+    }));
+    sheen.position.copy(ball.position);
+    group.add(sheen);
   }
 
   // Crown (for gold variant)
